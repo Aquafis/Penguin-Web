@@ -1,0 +1,54 @@
+/* Classes */
+body, html { color: white; font-family: helvetica; font-weight: lighter; height: 100%; 
+	margin: 0; overflow: hidden; padding: 0; }
+
+
+/* Content & Font specific */ 
+	.content { padding: 1em; position: relative; }
+
+
+/* Main-menu specific */
+	.menu { list-style: none; margin: 0; padding: 0; }
+	.menuitem { padding-bottom: 4px; padding-left: 2em; padding-top: 4px; }
+	/*.menuitemhover {}
+	.menuitemactive {}*/
+
+/* Sub-menu specific */
+	.submenu { bottom: 8px; position: absolute; text-align: center; }
+	.submenuitem { padding-left: 15px; padding-right: 15px; }
+	.submenuhover { box-shadow: 0px 8px 0px 0px white; cursor: pointer; }
+	.submenuactive { background: white; color: darkred; cursor: pointer !important; }
+
+/* Triangle specific */
+	[class*='triangle-big-'] 
+	{ border-bottom: 20px solid transparent; border-top: 20px solid transparent; }
+	[class*='triangle-small-'] 
+	{ border-bottom: 10px solid transparent; border-top: 10px solid transparent; }
+
+	.triangle-big-left { border-left: 20px solid #333; }
+	.triangle-small-left { border-left: 10px solid #333; }
+	.triangle-big-right { border-right: 20px solid #333; }
+	.triangle-small-right { border-right: 10px solid #333; }
+
+/* Color and non-parent specific classes */
+	.primarycolor { background: darkred; }
+	.secondarycolor { background: #444; }
+	.hidden { display: none !important; }
+
+
+
+/* ID's */
+
+/* Sidebar related */
+	#sidebar { float: left; height: 100%; min-height: 25%; width: 250px; }
+
+	#sidebar-logo { padding-bottom: 20px; padding-left: 45px; padding-top: 20px; 
+		width: 160px; }
+
+	#sidebar-menu { bottom: 4em; font-size: 2em; position: absolute; width: 250px; }
+
+	#sidebar-menu .triangle { display: inline-block; float: right; height: 100%; 
+		min-height: 25%; }
+
+/* Content related */
+	#content { background: #333; height: 100%; margin-left: 250px; }:
