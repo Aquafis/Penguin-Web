@@ -1,5 +1,60 @@
 extends layout
 
-block content
-  h1= title
-  p Welcome to #{title}
+block markup
+    aside#sidebar.primarycolor
+      img#sidebar-logo(src="/images/penguin.png", alt="Penguin")
+      ul#sidebar-menu.menu
+          li#sidebar-menu-penguin.menuitem penguin
+                div.triangle.triangle-big-right.hidden
+          li#sidebar-menu-students.menuitem students
+                div.triangle.triangle-big-right.hidden
+          li#sidebar-menu-faculty.menuitem faculty
+                div.triangle.triangle-big-right.hidden
+          li#sidebar-menu-clubs.menuitem clubs
+                div.triangle.triangle-big-right.hidden
+          li#sidebar-menu-blog.menuitem blog
+                div.triangle.triangle-big-right.hidden
+
+    #content.medium
+        #content-penguin
+            #content-penguin-about
+            #content-penguin-signup
+            #content-pengiun-downloads
+            #content-penguin-webmail
+            table#content-penguin-submenu.submenu
+                tr
+                    td.submenuitem about
+                    td.submenuitem downloads
+                    td.submenuitem sign up / login
+                    td.submenuitem web mail
+                    td.submenuitem FAQ
+
+        #content-students.hidden
+            table#content-students-submenu.submenu
+                tr
+                    td.submenuitem featured
+                    td.submenuitem courses
+                    td.submenuitem another-menu
+                    
+
+        #content-faculty.hidden
+            table#content-faculty-submenu.submenu
+                tr
+                    td.submenuitem faculty
+                    td.submenuitem assistants
+                    td.submenuitem others
+
+        #content-clubs.hidden
+            table#content-faculty-submenu.submenu
+                tr
+                    td.submenuitem clubs@penguin
+                    td.submenuitem ACM
+                    td.submenuitem coding club
+
+        #content-blog.hidden
+            table#content-blog-submenu.submenu
+                tr
+                    td.submenuitem announcements
+                    td.submenuitem ACM
+                    td.submenuitem coding club
+                    td.submenuitem open threads

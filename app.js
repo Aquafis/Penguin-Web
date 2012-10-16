@@ -19,6 +19,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser('93hf9ihj8HT93THOG84H'));
+
   app.use(express.session());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
@@ -28,7 +29,10 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
+//app.get('/', routes.index);
+app.get('/:title', function(req, res) {
+	res.render('index', {title: req.params.title});
+});
 app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
