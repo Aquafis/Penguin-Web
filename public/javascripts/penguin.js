@@ -239,7 +239,7 @@ var penguin = {
 		// Check and see element 
 
 		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
-		elem.animate({'margin-left': '100%'}, 400, function () {
+		elem.animate({'margin-left': '100%'}, 100, function () {
 			elem.addClass('hidden');
 			callback();
 		});
@@ -249,7 +249,7 @@ var penguin = {
 
 	_slateShow: function (elem, callback) {
 		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
-		elem.removeClass('hidden').animate({'margin-left': '0'}, 400, callback);
+		elem.removeClass('hidden').animate({'margin-left': '0'}, 100, callback);
 		return;
 	}
 }
