@@ -235,6 +235,10 @@ var penguin = {
 
 	},
 
+	_createArticle: function (elem, callback) {
+		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
+	},
+
 	_slateHide: function (elem, callback) {
 		// Check and see element 
 

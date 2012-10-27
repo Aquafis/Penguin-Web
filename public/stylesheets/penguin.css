@@ -14,6 +14,20 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	section { background: #222; }
 
 
+	/* Articles */
+	.articles { border-collapse: seperate; border-spacing: 0 1px; margin-top: 5px;
+		width: 100%; }
+	.article { background: #444; opacity: 0.8; }
+	.article:hover { cursor: pointer; opacity: 1; }
+	.article-header { border-left: 5px solid darkred; font-size: 1.0em; padding: 5px; 
+		vertical-align: top; width: 40%;  }
+	.article-teaser { font-size: 0.7em; padding: 5px; vertical-align: top;
+		width: 40%; }
+	.article-meta { font-size: 0.8em; vertical-align:
+		top; width: 20%; }
+	.article-meta p { margin: 0; }
+
+
 /* Main-menu specific */
 	.menu { list-style: none; margin: 0; padding: 0; }
 	.menuitem { padding-bottom: 4px; padding-left: 2em; padding-top: 4px; }
