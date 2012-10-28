@@ -1,19 +1,28 @@
 var db = require('../db.js');
 
-
-var daemon
-={
-
-    _run : function()
-    {
-        db.Models.processUser
-            .All()
-            .success(function (users)
-            {
-                for (var user in user)
-                {
-                    if(user.DELETE)
-                        console.log("Delete user: " + user.UUID);
-                }
-            }
+function Run() {
+	db.Connect();
+	db.fetchModels();
 }
+
+
+function Process() {
+	db.Models.processUser
+		.all()
+		.success(function (users)
+		{
+
+			for (var i in users)
+			{
+				if(users[i].DELETE)
+					console.log("Delete user: " + users[i].UUID);
+			}
+		})
+		.error(function () {
+
+		});
+}
+
+
+exports.Run = Run;
+exports.Process = Proccess;
