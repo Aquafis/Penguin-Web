@@ -1,6 +1,5 @@
 var Sequelize = require('sequelize');
 
-
 var db = {
 
 	/* Connection constants */
@@ -78,10 +77,6 @@ var db = {
 				console.log(err);
 			});
 	},
-
-	_addSampleData: function () {
-		samp_users.save();		
-	}
 }
 
 exports.Models = db.Models;
@@ -89,4 +84,3 @@ exports.Connect = db.Connect;
 exports.fetchModels = db._fetchModels;
 exports.createRelations = db._createRelations;
 exports.syncModels = db._syncModels;
-//exports.addSampleData = db._addSampleData();

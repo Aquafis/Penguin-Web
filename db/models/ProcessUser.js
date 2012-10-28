@@ -7,6 +7,35 @@ module.exports = function (sequelize, DataTypes) {
 				allowNull: false,
 				validate: { isUUID: 4 }
 			},
+		FIRST:
+			{
+				type: DataTypes.STRING,
+				allowNull: false,
+				validate: {
+					isAlpha: true,
+					len: [2, 25]
+				}
+				
+			},
+		LAST:
+			{
+				type: DataTypes.STRING,
+				allowNull: false,
+				validate: {
+					isAlpha: true,
+					len: [2, 25]
+				}
+			},
+		STUID:
+			{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				unique: true,
+				validate: {
+					isNumeric: true,
+					len: [7, 9]
+				}
+			},
 		TOKEN:
 			{
 				type: DataTypes.STRING,
