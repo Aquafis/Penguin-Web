@@ -123,7 +123,6 @@ app.get(/^\/users\/([\d]{1,8})$/, user.byStuId);
 db.Connect();
 db.fetchModels();
 db.syncModels();
-db.addSampleData();
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

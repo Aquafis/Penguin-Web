@@ -1,7 +1,5 @@
 var Sequelize = require('sequelize');
 
-var samp_users = require(__dirname + '/db/sample/Users.js');
-
 var db = {
 
 	/* Connection constants */
@@ -31,12 +29,12 @@ var db = {
 		console.log('connecting...');
 
 		self._sqlize = new Sequelize(
-				'penguin2',
-				'penguin2',
+				'penguin',
+				'penguin',
 				'ou8one2',
 				{
 					host: 'localhost',
-					port: 8889
+					port: 3306
 				});
 	},
 
@@ -79,10 +77,6 @@ var db = {
 				console.log(err);
 			});
 	},
-
-	_addSampleData: function () {
-		samp_users.save();		
-	}
 }
 
 exports.Models = db.Models;
@@ -90,4 +84,3 @@ exports.Connect = db.Connect;
 exports.fetchModels = db._fetchModels;
 exports.createRelations = db._createRelations;
 exports.syncModels = db._syncModels;
-exports.addSampleData = db._addSampleData();
