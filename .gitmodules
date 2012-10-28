@@ -1,0 +1,3 @@
+[submodule "scripts/nonsense"]
+	path = scripts/nonsense
+	url = http://github.com/jocafa/Nonsense.git
