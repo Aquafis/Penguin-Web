@@ -1,0 +1,78 @@
+/* Classes */
+body, html { color: white; font-family: helvetica; font-weight: lighter; height: 100%; 
+	margin: 0; overflow: hidden; padding: 0; }
+
+
+/* Content & Font specific */ 
+	.content { padding: 5px; position: relative; width: 100%; height: 95%; }
+	.container { height: inherit; width: inherit; }
+
+	.heading { font-weight: normal; margin: 0; color: darkred; 
+		background: #EEE; padding-left: 5px; padding-top: 5px; 
+		border-radius: 6px 0px 6px 0px; }
+	p { font-size: 0.8em; line-height: 1.3em; }
+	section { background: #222; }
+
+
+	/* Articles */
+	.articles { border-collapse: seperate; border-spacing: 0 1px; margin-top: 5px;
+		width: 100%; }
+	.article { background: #444; opacity: 0.8; }
+	.article:hover { cursor: pointer; opacity: 1; }
+	.article-header { border-left: 5px solid darkred; font-size: 1.0em; padding: 5px; 
+		vertical-align: top; width: 40%;  }
+	.article-teaser { font-size: 0.7em; padding: 5px; vertical-align: top;
+		width: 40%; }
+	.article-meta { font-size: 0.8em; vertical-align:
+		top; width: 20%; }
+	.article-meta p { margin: 0; }
+
+
+/* Main-menu specific */
+	.menu { list-style: none; margin: 0; padding: 0; }
+	.menuitem { padding-bottom: 4px; padding-left: 2em; padding-top: 4px; }
+	/*.menuitemhover {}
+	.menuitemactive {}*/
+
+/* Sub-menu specific */
+	.submenu { bottom: 8px; position: absolute; text-align: center; }
+	.submenuitem { padding-left: 15px; padding-right: 15px; }
+	.submenuhover { box-shadow: 0px 8px 0px 0px white; cursor: pointer; }
+	.submenuactive { background: white; color: darkred; cursor: pointer !important; }
+
+/* Triangle sp}cific */
+	[class*='triangle-big-'] 
+	{ border-bottom: 20px solid transparent; border-top: 20px solid transparent; }
+	[class*='triangle-small-'] 
+	{ border-bottom: 10px solid transparent; border-top: 10px solid transparent; }
+
+	.triangle-big-left { border-left: 20px solid #333; }
+	.triangle-small-left { border-left: 10px solid #333; }
+	.triangle-big-right { border-right: 20px solid #333; }
+	.triangle-small-right { border-right: 10px solid #333; }
+
+/* Color and non-parent specific classes */
+	.primarycolor { background: darkred; }
+	.secondarycolor { background: #444; }
+	.hidden { display: none !important; }
+	.left { float: left; }
+	.right { float: right; }
+	.oncol { width: 100%; }
+	.twocol { width: 48%; }
+	.threecol { width: 31%; }
+
+/* ID's */
+
+/* Sidebar related */
+	#sidebar { float: left; height: 100%; min-height: 25%; width: 250px; }
+
+	#sidebar-logo { padding-bottom: 20px; padding-left: 45px; padding-top: 20px; 
+		width: 160px; }
+
+	#sidebar-menu { bottom: 4em; font-size: 2em; position: absolute; width: 250px; }
+
+	#sidebar-menu .triangle { display: inline-block; float: right; height: 100%; 
+		min-height: 25%; }
+
+/* Content related */
+	#content { background: #333; height: 100%; margin-left: 250px; }:

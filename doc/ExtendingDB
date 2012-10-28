@@ -1,0 +1,17 @@
+Developing out Database
+-----------------------
+
+### Preamble
+The database for Penguin is a pretty simple setup. All user and blog data is stored
+on a MySQL instance. Node.JS makes database interaction quite easy. For this project,
+we primary use the Node module: `sequelize`, which is an ORM for a small set of
+databases.
+
+To edit or create new database schema, it's important to understand the layout of DB
+access for Penguin. If you've taken note of the app layout, you'll notice there is a
+`db/` directory in the `root`. This is where all the Node/Sequelize schema files are
+and also the main DB file which contains the basic actions to control the schema.
+
+### Implementation
+In order to get your own schema up or to create changes in the schema, you'll have to
+do a few simple things. The first is to 
