@@ -31,3 +31,19 @@ function createUUID() {
 	var uuid = s.join("");
 	return uuid;
 }
+
+function createSTUID() {
+var digits = [];
+for (var i = 0; i < 6; i++) {		
+	digits[i] = Math.floor(Math.random()*10);
+}
+return digits.join("");
+}
+
+function randBOOL() {
+	return (Math.floor(Math.random()*2)%2 == 0);
+}
+
+exports.createUUID = createUUID;
+exports.createSTUID = createSTUID;
+exports.randBOOL = randBOOL;

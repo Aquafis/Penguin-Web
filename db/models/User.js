@@ -28,7 +28,7 @@ module.exports = function (sequelize, DataTypes) {
 			},
 		STUID:
 			{
-				type: DataTypes.INTEGER,
+				type: DataTypes.STRING,
 				allowNull: false,
 				unique: true,
 				validate: {

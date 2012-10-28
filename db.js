@@ -1,14 +1,13 @@
 var Sequelize = require('sequelize');
 
-var samp_users = require(__dirname + '/db/sample/Users.js');
 
 var db = {
 
 	/* Connection constants */
 	__HOST: 'localhost',
 	__PORT:  8889,
-	__DATABASE: 'penguin2',
-	__USERNAME: 'penguin2',
+	__DATABASE: 'penguin',
+	__USERNAME: 'penguin',
 	__PASSWORD: 'ou8one2',
 
 	/* Sequelize Object (Used throughout) */
@@ -31,12 +30,12 @@ var db = {
 		console.log('connecting...');
 
 		self._sqlize = new Sequelize(
-				'penguin2',
-				'penguin2',
+				'penguin',
+				'penguin',
 				'ou8one2',
 				{
 					host: 'localhost',
-					port: 8889
+					port: 3306
 				});
 	},
 
@@ -90,4 +89,4 @@ exports.Connect = db.Connect;
 exports.fetchModels = db._fetchModels;
 exports.createRelations = db._createRelations;
 exports.syncModels = db._syncModels;
-exports.addSampleData = db._addSampleData();
+//exports.addSampleData = db._addSampleData();
