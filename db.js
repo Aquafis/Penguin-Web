@@ -29,12 +29,13 @@ var db = {
 		console.log('connecting...');
 
 		self._sqlize = new Sequelize(
-				'penguin',
-				'penguin',
+				'penguin2',
+				'penguin2',
 				'ou8one2',
 				{
 					host: 'localhost',
-					port: 3306
+					port: 8889,
+					logging: false
 				});
 	},
 
@@ -69,10 +70,11 @@ var db = {
 		});
 	},
 
-	_syncModels: function () {
+	_overwriteModels: function (callback) {
 		var self = this;
 
 		self._sqlize.sync({force: true})
+			.success(callback || new Function)
 			.error(function (err) {
 				console.log(err);
 			});
@@ -83,4 +85,4 @@ exports.Models = db.Models;
 exports.Connect = db.Connect;
 exports.fetchModels = db._fetchModels;
 exports.createRelations = db._createRelations;
-exports.syncModels = db._syncModels;
+exports.overwriteModels = db._overwriteModels;

@@ -36,6 +36,14 @@ module.exports = function (sequelize, DataTypes) {
 					len: [7, 9]
 				}
 			},
+		MEDIA:
+			{
+				type: DataTypes.INTEGER,
+				allowNull: true,
+				validate: {
+					isNumeric: true
+				}
+			},
 		CREATED:
 			{ type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
 		LAST_LOGIN:
