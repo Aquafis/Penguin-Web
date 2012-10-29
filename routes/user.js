@@ -4,7 +4,7 @@ var db = require('./../db');
  * GET
  */
 
-var page_size = 1;
+var page_size = 25;
 
 exports.paginate = function (req, res, next) {
 	res.locals.page = parseInt(req.param('page'), 10) || 1;

@@ -6,9 +6,10 @@ db.Connect();
 db.fetchModels();
 
 for (i = 0; i < 1000; i++) {
-	/*var user = UD.randomUser();
+	var user = UD.randomUser();
 	var newUser = db.Models.user.build(user);
-	newUser.save();*/
+	newUser.save();
+	
 	var puser = PUD.randomPUser();
 	var newPUser = db.Models.processUser.build(puser);
 	newPUser.save();
