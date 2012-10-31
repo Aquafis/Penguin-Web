@@ -7,23 +7,24 @@ Resource List
 ### User Retrieval
 + /user [COMPLETE]
 + /user/stuId [COMPLETE]
-+ /user/name
-+ /user/featured
-+ /user/faculty
++ /user/name [COMPLETE]
++ /user/first/last [COMPLETE]
++ /user/featured [COMPLETE]
++ /user/faculty [COMPLETE]
 + /user/admin [COMPLETE]
 + /user/authors [COMPLETE]
 
 ### User Actions
-+ /user/create
++ /user/create 
 + /user/stuid/edit
 + /user/stuid/remove
-+ /user/login
++ /login
 
 
 ### Blog Retrieval
-+ /blog
-+ /blog/name
-+ /blog/id
++ /blog [COMPLETE]
++ /blog/name [COMPLETE]
++ /blog/id [COMPLETE]
 + /blog/author
 
 ### Blog Actions

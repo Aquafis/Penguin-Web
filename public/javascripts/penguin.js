@@ -233,6 +233,9 @@ var penguin = {
 		/*$('#sidebar-menu').children(':first').data('active', true)
 			.addClass('menuitemactive').children('.triangle').toggleClass('hidden');*/
 
+		// Load latest news
+		self.loadLatestNews('#latest-news');
+
 	},
 
 	_createArticle: function (elem, callback) {
@@ -255,5 +258,92 @@ var penguin = {
 		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
 		elem.removeClass('hidden').animate({'margin-top': '0'}, 100, callback);
 		return;
-	}
+	},
+
+
+	loadLatestNews: function (elem, callback) {
+		var self = this;
+		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
+
+		// Fetch the latest post data
+		$.ajax({
+			url: '/latest',
+			success: function (articles) {
+				var articleCollection = [],
+					i = 0;
+
+				$.each(articles.data, function(idx, article) {
+					var articleRow = self._buildSmallArticleMarkup(article);
+					articleRow.hide();
+					elem.append(articleRow)
+					
+					articleCollection.push(articleRow);
+				});
+
+				// Seqentially show articles loaded
+				// TODO Make sure to start with offset once paging is embeded 
+				(function() {
+					$(articleCollection[i++]).show('fast', arguments.callee);	
+				})();
+
+				
+				// TODO Embed paging and metadata for forward requests
+				if (callback) {
+					callback(data);
+				}
+			}
+		});
+	},
+
+	_buildSmallArticleMarkup: function (article) {
+		// Construct DOM elements / parse date
+
+		var articleRow = $('<tr></tr>'),
+			articleHeader = $('<td></td>'),
+			articleTease = $('<td></td>'),
+			articleMeta = $('<td></td>'),
+			date = this._mysqlTimeStampToDate(article.CREATED);
+
+		// Fill in CSS & Content for the article and article children
+			articleRow.addClass('article');
+			articleRow.attr('title', article.TITLE);
+
+			articleHeader.addClass('article-header');
+			if (article.TITLE.length > 20) {
+				articleHeader.html(article.TITLE.substr(0, 20) + '...');
+			} else {
+				articleHeader.html(article.TITLE);
+			}
+
+			articleTease.addClass('article-teaser');
+			if (article.BLURB.length > 25) {
+				articleTease.html(article.BLURB.substr(0, 25) + '...');
+			} else {
+				articleTease.html(article.BLURB);
+			}
+
+			articleMeta.addClass('article-meta');
+			articleMeta.html('<p>'+article.AUTHOR_ID+'</p><p>'+date.toDateString()+'</p>');
+
+		// Embed article object into the article row
+		articleRow.data('data', article);
+	
+		// Attach children to article row
+		articleRow.append(articleHeader);
+		articleRow.append(articleTease);
+		articleRow.append(articleMeta);
+
+		return articleRow;
+	},
+
+	_mysqlTimeStampToDate: function (timestamp) {
+		//function parses mysql datetime string and returns javascript Date object
+		//input has to be in this format: 2007-06-05 15:26:02
+		timestamp = timestamp.replace(/[T]/g, ' ');
+		timestamp = timestamp.replace(/(\.\d+Z)/, '');    
+		var regex=
+			/^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9]) (?:([0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$/;
+		var parts=timestamp.replace(regex,"$1 $2 $3 $4 $5 $6").split(' ');
+		return new Date(parts[0],parts[1]-1,parts[2],parts[3],parts[4],parts[5]);
+  }
 }

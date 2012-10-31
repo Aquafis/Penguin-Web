@@ -87,7 +87,7 @@ exports.fullName = function (req, res){
 // Single User 
 exports.byStuId = function (req, res) {
 	db.Models.user
-		.find({ where: {STUID: req.params[0] }})
+		.find({ where: {STUID: req.params.stuid }})
 		.success( function (student) {
 			res.json({ data: student });
 		})

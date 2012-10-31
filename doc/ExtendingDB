@@ -14,4 +14,10 @@ and also the main DB file which contains the basic actions to control the schema
 
 ### Implementation
 In order to get your own schema up or to create changes in the schema, you'll have to
-do a few simple things. The first is to 
+do a few simple things. The first is create a Sequelize schema object model under
+/db/models/. 
+
+Next is to extend your new model in the database library /db/db.js. Be sure to add
+an object under `db.Models` to represent your schema, and them also be sure to create
+the appropriate `Sequelize.import()` statement under `db._fetchModels()` so that your
+newly written schema object is loaded into the library. 
