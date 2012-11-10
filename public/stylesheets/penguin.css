@@ -6,6 +6,8 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 /* Content & Font specific */ 
 	.content { padding: 5px; position: relative; width: 100%; height: 95%; }
 	.container { height: inherit; width: inherit; }
+	.wrapper { position: relative; width:100%; padding: 5px; }
+	.bounds { height: 100%; overflow: hidden; position: relative; width:100%; }
 
 	.heading { font-weight: normal; margin: 0; color: darkred; 
 		background: #EEE; padding-left: 5px; padding-top: 5px; 
@@ -40,7 +42,29 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	.submenuhover { box-shadow: 0px 8px 0px 0px white; cursor: pointer; }
 	.submenuactive { background: white; color: darkred; cursor: pointer !important; }
 
-/* Triangle sp}cific */
+	.submenu-notification { background: darkRed; border: 1px solid white; 
+		color: white; font-size: 0.6em; padding-left: 3px; padding-right: 3px; 
+		position: absolute; right: 5%; text-shadow: none; top: 20%; }
+
+
+/* Modal specific */	
+	.modal-close { background: #BBB; color: #EEE; font-size: 1.3em; padding-left: 5px;
+		padding-right: 5px; position: absolute; right: 0.5%; top: 0.5%; }
+	.modal-close:hover { background: #999; color: white; cursor: pointer; }
+
+	.modal-menu { font-size: 2em; list-style: none; margin: 0; padding-left: 5px; }
+
+	.modal-submenu { font-size: 1.4em; padding: 0; position: absolute; 
+		text-align: center; top: 10%; width: 100%; }
+
+	.modal-menu-item:hover { border-left: 8px solid darkred; cursor: pointer; }
+	.modal-menu-item:active { background: #BBB; border: 0 !important;
+		box-shadow: 0px 1px 4px 0px #777; cursor: normal !important; }
+
+
+	
+
+/* Triangle specific */
 	[class*='triangle-big-'] 
 	{ border-bottom: 20px solid transparent; border-top: 20px solid transparent; }
 	[class*='triangle-small-'] 
@@ -60,6 +84,7 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	.oncol { width: 100%; }
 	.twocol { width: 48%; }
 	.threecol { width: 31%; }
+	.viewed { opacity: 0.6 !important; }
 
 /* ID's */
 
@@ -75,4 +100,50 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 		min-height: 25%; }
 
 /* Content related */
-	#content { background: #333; height: 100%; margin-left: 250px; }:
+	#content { background: #333; height: 100%; margin-left: 250px; }
+
+
+/* Modal Related */
+	#modal-overlay {
+		background: #333; height: 100%; opacity: 0.8; position: absolute; top: 0; 
+		width: 100%; z-index: 5000; }
+
+	#modal-manage-container { background: #222; height: 700px; margin-left: 20%; 
+		position: absolute; top: 0; top: 3%; width: 900px; z-index: 5000; }
+
+	#modal-manage-content { height: 100%; position: absolute; width: 75%; }
+
+	#modal-manage-aside { background: #DDD; color: #333; height: 100%; position: absolute;
+		right: 0; text-shadow: 0px 1px white; width: 25%; }
+
+		findAll( where: {} );
+	#manage-main-menu { bottom: 0; position: absolute; width: 100%; }	
+
+
+/* Blog view specific */
+
+	#modal-post-container { background-color: #333; border-right-color: darkRed; 
+		border-right-style: solid; border-right-width: 0px; 
+		box-shadow: black 3px 0px 24px -3px; display: block; height: 100%; left: 0px; 
+		opacity: 0.99; position: absolute; top: 0px; width: 600px; z-index: 5000; }
+
+	#modal-post-content { padding-top: 25px; }
+
+	#post-loupe-container { float: left; margin-bottom: 15px; width: 50%; }
+
+	#post-author-container { float: left; margin-bottom: 15px; width: 50%; }
+
+	#post-content-container { clear: both; height: 580px; overflow-y: auto; 
+		padding: 0px; }
+
+	#post-loupe-main { width: 100px; }
+	#post-loupe-thumbs img { width: 30px; }
+
+	#post-author-thumb { width: 100px; }
+	#post-author-data { display: inline; float: right; list-style: none; margin: 0;
+		padding: 0; }
+
+	
+
+
+	

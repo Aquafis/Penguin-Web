@@ -1,7 +1,34 @@
 var penguin = {
 	
+
+	Post: {
+		postViewOpen: false,
+		postViewMini: false,
+		postLoading: true,
+		loadedPosts: [],
+
+		// Load / Open post view
+		loadPost: function (postData) {
+			var self = penguin;
+
+			if (!self.Post.postViewOpen) {
+				self.Events.e_showPostModal();
+			} else if (self.Post.postViewMini) {
+				self.Events.e_maximizePostModal();
+			}
+
+			// TODO Implement caching
+			$('#modal-post-content').empty();
+			// ajaxElement('#modal-post-container');
+			self._createArticle(postData);
+			// unAjaxElement('#modal-post-container');
+		}
+	},
+
 	// Functions to handle all Penguin app events
 	Events: {	
+
+		/* APP MAIN AND SUBMENU EVENTS */
 	
 		// EVENT - Hover on a main menu element [ STYLE & BEHAVIOR ]
 		e_hoverOnMainMenuElement: function (e) {
@@ -26,7 +53,6 @@ var penguin = {
 				});
 			}
 		},
-
 
 		// EVENT - Hover on a sub menu element [ STYLE & BEHAVIOR ]
 		e_hoverOnSubMenuElement: function (e) {
@@ -169,10 +195,55 @@ var penguin = {
 			penguin._slateHide(currSlate, function() {
 				penguin._slateShow(newSlate);
 			});
+		},
+	
+		/* POST MODAL EVENTS */
+		
+		// EVENT - Show the post-viewer modal (shows from left)
+		e_showPostModal: function (e) {
+			$('#modal-post-container').show('slide', {direction: 'left'}, 200);	
+			penguin.Post.postViewOpen = true;
+		},
+
+		// EVENT - Hide the post-viewer modal (hides to left)
+		e_hidePostModal: function (e) {
+			$('#modal-post-container').hide('slide', {direction: 'left'}, 200);	
+			penguin.Post.postViewOpen = false;
+		},
+
+		// EVENT - Minimize the post-view modal (Hides mostly to left)
+		e_minimizePostModal: function (e) {
+			$('#modal-post-container').animate({left: -550});
+			penguin.Post.postViewMini = true;
+		},
+
+		// EVENT - Restore the post-view modal to it's full viewable width
+		e_maximizePostModal: function (e) {
+			$('#modal-post-container').animate({left: 0});
+			penguin.Post.postViewMini = false;
+		},
+
+		/* MANAGEMENT MODAL EVENTS */
+
+		/* LOUPE MODAL EVENTS */
+
+		/* PROFILE MODAL EVENTS */
+
+		/* ARTICLE EVENTS */
+
+		// EVENT - Click to view an article
+		e_clickOnArticle: function (e) {
+			var elem = $(this),
+				data = elem.data('data');
+
+			// TODO Implement caching
+			if (data.viewed) {}
+				//elseif
+
+			elem.addClass('viewed');
+			penguin.Post.loadPost(data);
 		}
-	
 	},
-	
 
 	// Bind all penguin events to DOM
 	_initEvents: function () {
@@ -238,15 +309,110 @@ var penguin = {
 
 	},
 
-	_createArticle: function (elem, callback) {
-		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
+	_createArticle: function (postData) {
+		var self = penguin;
+		// TODO Load comments and other data here
+		// FAKE DATA 
+		var media = {
+			thumb : {
+				src: '/images/acm.png',
+				title: 'ACM logo'
+			},
+			img: 
+				[
+					{ src: '/images/acm.png', title: 'ACM logo' },
+					{ src: '/images/acm.png', title: 'ACM logo' },
+					{ src: '/images/acm.png', title: 'ACM logo' },
+					{ src: '/images/acm.png', title: 'ACM logo' },
+					{ src: '/images/acm.png', title: 'ACM logo' },
+				]
+		},
+			author = {
+				name: 'Kevin Jackson',
+				posts: '33',
+				stuid: '285335',
+				media: {
+					thumb: {
+						src: '/images/acm.png',
+						title: 'ACM logo',
+					}
+				}
+			}
+
+
+		var loupeCntr = $('<div id="post-loupe-container"></div>'),
+			loupeMain = $('<img id="post-loupe-main" />'),
+			loupeThms = $('<table id="post-loupe-thumbs"></table>'),
+			loupeRow = $('<tr class="post-loupe-row"></tr>'),
+			loupeThmHeight = 3;
+
+			authorCntr = $('<div id="post-author-container"></div>'),
+			authorThumb = $('<img id="post-author-thumb" />'),
+			authorData = $('<ul id="post-author-data"></ul>'),
+
+			contentCntr = $('<div id="post-content-container"></div>'),
+			contentTitl = $('<h2 id="post-content-title"></h2>'),
+			contentBlrb = $('<h3 id="post-content-blurb"></h3>'),
+			contentMain = $('<div id="post-content-main"></div>'),
+			
+			postCntr = $('#modal-post-content');
+
+		// Create the loupe section
+		loupeMain.attr('src', media.thumb.src);
+		loupeMain.attr('alt', media.thumb.title);
+
+		for (idx in media.img) {
+			var loupeCol = $('<td class="post-loupe-col"></td>'),
+				loupeThm = $('<img src="' + media.img[idx].src 
+							+ '" title="'+ media.img[idx].title+'" />');
+
+			loupeCol.append(loupeThm);
+			loupeRow.append(loupeCol);
+
+			if (idx != 0 && (idx % loupeThmHeight == 0)) {
+				loupeThms.append(loupeRow);
+				loupeRow = $('<tr class="post-loupe-row"></tr>');
+			}
+		}
+
+		loupeCntr.append(loupeMain);
+		loupeCntr.append(loupeThms);
+
+		// Create the author section
+		authorThumb.attr('src', author.media.thumb.src);
+		authorThumb.attr('alt', author.media.thumb.title);
+
+		authorData.append('<li>Posted: ' 
+				+ self._mysqlTimeStampToDate(postData.CREATED).toDateString() + '</li>'),
+		authorData.append('<li>Author: ' + author.name + '</li>');
+		authorData.append('<li>Posts: ' + author.posts + '</li>');
+		authorData.append('<li><a href="#">Profile</a></li>');
+
+		authorCntr.append(authorThumb);
+		authorCntr.append(authorData);
+
+		// Create content section
+		contentTitl.html(postData.TITLE);
+		contentBlrb.html(postData.BLURB);
+		contentMain.html(postData.CONTENT);
+
+		contentCntr.append(contentTitl);
+		contentCntr.append(contentBlrb);
+		contentCntr.append(contentMain);
+
+		postCntr.append(loupeCntr);
+		postCntr.append(authorCntr);
+		postCntr.append(contentCntr);
+
+			// TODO - build comment logic
+			//commentView = $('<div id="post-comment-container"></div>');
 	},
 
 	_slateHide: function (elem, callback) {
 		// Check and see element 
 
 		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
-		elem.animate({'margin-top': '100%'}, 100, function () {
+		elem.animate({'margin-left': '100%'}, 100, function () {
 			elem.addClass('hidden');
 			callback();
 		});
@@ -256,22 +422,35 @@ var penguin = {
 
 	_slateShow: function (elem, callback) {
 		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
-		elem.removeClass('hidden').animate({'margin-top': '0'}, 100, callback);
+		elem.removeClass('hidden').animate({'margin-left': '0'}, 100, callback);
 		return;
 	},
 
-
-	loadLatestNews: function (elem, callback) {
-		var self = this;
+	loadLatestBlog: function (elem, blogId, size, callback) {
 		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
+		var self = this,
+			page = 1;
 
-		// Fetch the latest post data
+		if (!elem.data('blog-data')) {
+			elem.data('blog-data', {blogId: blogId, size: size} );
+		}
+
+		if (elem.data('paging')) {
+			page = elem.data('paging').page + 1;
+		};
+
 		$.ajax({
-			url: '/latest',
+			url: '/blog/' + (elem.data('blog-data').blogId || blogId) + '/post',
+			data: { page: page, size: elem.data('blog-data').size || size },
 			success: function (articles) {
+				// Add meta & paging data to parent element
+				elem.data('paging', articles.paging);
+
+				// Used in sequential fade-in animation
 				var articleCollection = [],
 					i = 0;
 
+				// Iterate over articles and build them
 				$.each(articles.data, function(idx, article) {
 					var articleRow = self._buildSmallArticleMarkup(article);
 					articleRow.hide();
@@ -281,13 +460,54 @@ var penguin = {
 				});
 
 				// Seqentially show articles loaded
-				// TODO Make sure to start with offset once paging is embeded 
 				(function() {
 					$(articleCollection[i++]).show('fast', arguments.callee);	
 				})();
 
-				
-				// TODO Embed paging and metadata for forward requests
+				if (callback) {
+					callback(data);
+				}
+			}
+		});
+	},
+
+	loadLatestNews: function (elem, callback) {
+		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
+		var self = this,
+			page = 1;
+
+		// Factor in paging
+		if (elem.data('paging')) {
+			page = elem.data('paging').page + 1;
+		}
+
+		// Fetch the latest post data
+		$.ajax({
+			url: '/latest',
+			data: { page: page, size: 10 },
+			success: function (articles) {
+
+				// Add meta & paging data to parent element
+				elem.data('paging', articles.paging);
+
+				// Used in sequential fade-in animation
+				var articleCollection = [],
+					i = 0;
+
+				// Iterate over articles and build them
+				$.each(articles.data, function(idx, article) {
+					var articleRow = self._buildSmallArticleMarkup(article);
+					articleRow.hide();
+					elem.append(articleRow)
+					
+					articleCollection.push(articleRow);
+				});
+
+				// Seqentially show articles loaded
+				(function() {
+					$(articleCollection[i++]).show('fast', arguments.callee);	
+				})();
+
 				if (callback) {
 					callback(data);
 				}
@@ -333,6 +553,9 @@ var penguin = {
 		articleRow.append(articleTease);
 		articleRow.append(articleMeta);
 
+		// Bind click to event
+		articleRow.bind('click', this.Events.e_clickOnArticle);
+
 		return articleRow;
 	},
 
@@ -345,5 +568,36 @@ var penguin = {
 			/^([0-9]{2,4})-([0-1][0-9])-([0-3][0-9]) (?:([0-2][0-9]):([0-5][0-9]):([0-5][0-9]))?$/;
 		var parts=timestamp.replace(regex,"$1 $2 $3 $4 $5 $6").split(' ');
 		return new Date(parts[0],parts[1]-1,parts[2],parts[3],parts[4],parts[5]);
-  }
+  },
+	_ajaxElement: function (elem) {
+		elem = (elem instanceof jQuery) ? elem : $(elem);
+
+		if (elem.has('#temp-load').length) {
+			console.log('loader already present');
+			elem.children().hide();
+			elem.find('#temp-load').show();
+			return;
+		}
+
+		var loadCtnr = $('<div id="temp-load" class="bounds"></div>'),
+			loader   = $('<img src="/images/loader.gif" />'),
+			height   = (elem.height() / 2) - (loader.height() / 2),
+			width    = (elem.width() / 2) - (loader.width() / 2);
+
+		loadCtnr.append(loader);
+		elem.children().hide();
+		elem.append(loadCtnr);
+
+		loader.css({
+			left: width,
+			position: 'absolute',
+			top: height
+		});
+	},
+
+	_unAjaxElement: function(elem) {
+		elem = (elem instanceof jQuery) ? elem : $(elem);
+		var loader = elem.find('#temp-load').hide();
+		elem.children().not(loader).show();
+	}
 }

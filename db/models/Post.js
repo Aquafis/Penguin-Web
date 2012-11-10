@@ -4,6 +4,8 @@ module.exports = function (sequelize, DataTypes) {
 			{ type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 		BLOG_ID:
 			{ type: DataTypes.INTEGER, allowNull: false },
+		AUTHOR:
+			{ type: DataTypes.TEXT, allowNull: false },
 		AUTHOR_ID:
 			{ type: DataTypes.INTEGER, allowNull: false },
 		CREATED:
