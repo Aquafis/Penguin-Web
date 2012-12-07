@@ -2,24 +2,33 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , params = require('express-params')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , blog = require('./routes/blog')
-  , post = require('./routes/post')
-  , http = require('http')
-  , https = require('https')
-  , path = require('path')
-  , db	 = require('./db');
+var
+    blog	= require('./routes/blog')
+  , connect	= require('connect')
+  , cookie  = require('cookie')
+  , db		= require('./db')
+  , express = require('express')
+  , http	= require('http')
+  , https	= require('https')
+  , io		= require('socket.io')
+  , params	= require('express-params')
+  , path	= require('path')
+  , post	= require('./routes/post')
+  , routes	= require('./routes')
+  , user	= require('./routes/user')
+  , Session	= connect.middleware.session.Session
+  , Store	= connect.middleware.session.MemoryStore;
 
-var app = express();
+var app		= express(),
+	server	= http.createServer(app),
+	rtn		= io.listen(server),
+	store	= new Store();
 
-/* Extentions */
+/* Express extentions */
 params.extend(app);
 
 
-/* Configuration */
+/* Express Configuration */
 app.configure(function(){
   app.set('port', process.env.PORT || 80);
   app.set('views', __dirname + '/views');
@@ -28,9 +37,14 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser('93hf9ihj8HT93THOG84H'));
+  app.use(express.cookieParser());
 
-  app.use(express.session());
+  app.use(express.session({
+	  store: store,
+	  secret: 'secret',
+	  key: 'express.sid'
+  }));
+
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
 });
@@ -38,6 +52,83 @@ app.configure(function(){
 app.configure('development', function(){
   app.use(express.errorHandler());
 });
+
+// Conect HTTP server
+server.listen(app.get('port'), function(){
+  console.log("Express server listening on port " + app.get('port'));
+});
+
+
+/* REAL TIME NOTIFICATION SERVER CONFIG */
+rtn.configure(function() {
+	// Let sessions be accessible by socket.io (RTN)
+	rtn.set('authorization', function (data, accept) {
+		if (data.headers.cookie) {
+			try {
+				var signed_cookies = cookie.parse(decodeURIComponent(data.headers.cookie));
+				data.cookie = connect.utils.parseSignedCookies(signed_cookies, 'secret');
+			} catch (err) {
+				return accept('Cookie parse error', false);
+			}
+
+			data.sessionID		= data.cookie['express.sid'];
+			data.sessionStore	= store;
+			store.load(data.sessionID, function (err, session) {
+				if (err || !session)
+					accept('Error', err);
+				else {
+					data.session = session; //new Session();
+					accept(null, true);
+				}
+			});
+		} else {
+			return accept('No Cookie transmitted', false);
+		}
+	});
+});
+
+// RTN - ON CONNECT EVENT
+rtn.sockets.on('connection', function (socket) {
+	var hs = socket.handshake;
+	console.log('SOCKET CONNECTION. SESSID: ' + hs.sessionID);
+
+	var intID = setInterval(function () {
+		hs.session.reload(function() {
+			console.log('touching cookies');
+			hs.session.touch().save();
+		});
+	}, 60 * 1000);
+	socket.emit('conn', {success: 'RTN connection successful. Hello! ' + hs.sessionID});
+	balls(socket.id);
+
+	socket.on('boner', function (data) {
+		console.log('BONER RECEIVED!');
+		hs.session.reload(function() {
+			hs.session.boner = 'boner activated';
+			hs.session.touch().save();
+		});
+	});
+
+	socket.on('test', function (data) {
+			hs.session.test = 'test activated';
+			hs.session.touch().save();
+	});
+
+	socket.on('cdump', function () {
+		hs.session.reload(function () {
+			console.log('SESSION DATA: %j ', hs.session);
+			socket.emit('cdump', {session: hs.session});
+		});
+	});
+});
+
+
+
+function balls (client) {
+	rtn.sockets.socket(client).emit('conn', {success: 'SPECIFIC MESSAGE TO: ' + client});
+}
+
+/* END RTN */
 
 /* MIDDLE WARE */
 function filterXHR (req, res, next) {
@@ -59,7 +150,67 @@ app.param('blogid', /^\d+$/);
 app.param('postid', /^\d+$/);
 
 app.get('/', function(req, res) {
-	res.render('index', {title: req.params.title});
+	var loggedin	= false, 
+		user		= false
+	console.log('session1: %j', req.session);
+
+	if (req.session.login) {
+		loggedin	= true;
+		user		= req.session.login.user;
+
+	}
+
+	res.render('index',  {
+		loggedin: loggedin, 
+		user: user
+	});
+});
+
+app.post('/login', function (req, res) {
+	// TODO Validate the user
+	console.log('LOGIN SESSION: %j', req.session);
+	
+	if (!req.param('user') == 'kjackson' || !req.param('pass') == 'letmein') {
+		res.send({error: 'Bad login'});
+		return;
+	} else {
+
+	var u = {
+		uuid: '003056c1-aa91-4032-b124-edf44144c90a',
+		first: 'Kevin',
+		last: 'Jackson',
+		stuid: '285335',
+		admin: true,
+		author: true,
+		faculty: true
+	}
+
+	// TODO Set all of the session data we'll need
+	/*store.load(req.sessionID, function (err, session) {
+		if (err || !session)
+			res.send({'error': 'Session not found'});
+		else {
+			session.login = {
+				loggedin: true,
+				user: u,
+				session: req.sessionID
+			}
+			session.touch().save();
+		}
+	});*/
+
+	req.session.login = {
+		loggedin: true,
+		user: u
+	}
+	req.session.touch();
+	
+	console.log('LOGIN SESSION: AFTER %j', req.session);
+	res.send({success: 'succesfully logged in!'});
+	}
+});
+
+app.post('/signup', function (req, res) {
 });
 
 /* USERS */
@@ -182,9 +333,11 @@ app.get('/blog/:blogid/post/:title', function (req, res, next) {
 app.get('/latest', post.paginate, post.many);
 
 
+// JUNK
+app.get('/broadcast', function (req, res) {
+	rtn.broadcast(req.params.broadcast);	
+});
+
 db.Connect();
 db.fetchModels();
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
-});

@@ -1,7 +1,8 @@
 extends layout
-
 block markup
     aside#sidebar.primarycolor
+      - if (loggedin)
+        a#sidebar-welcome(href="#") Welcome, #{user.first}
       img#sidebar-logo(src="/images/penguin.png", alt="Penguin")
       ul#sidebar-menu.menu
           li#sidebar-menu-penguin.menuitem penguin
@@ -44,9 +45,51 @@ block markup
                         | who have little or no UNIX experience.
                     h1.heading Latest News
                     table#latest-news.articles(cellspacing="0")
-            #content-penguin-signup.content
             #content-pengiun-downloads.content
+                p Coming soon
+            #content-penguin-signup.content
+                section#penguin-account-about.container.content.twocol.left
+                    h1.heading Perks of being a Penguin
+                    p Having an account with Penguin is the best way, well,
+                        | the only way really, to supplement your LHU Linux experience
+                        | online. With an account, you will be able to contribute
+                        | content to other students and give constructive input on what
+                        | others have to share. Signing up is simple and only takes a
+                        | few minutes (mostly to verify the account through the LHU
+                        | directory system).
+
+                    p Your account will maintain state with the changes you make
+                        | to your account in the Penguin Lab, and visa versa. The goal
+                        | at hand is to make your Penguin experience seamless. Trivial
+                        | tasks which can become mundane, like changing your account
+                        | password at the system suggested intervals, will become a
+                        | sinch through the Penguin Site.
+
+                    p Not particiapting in the Applied Computer Science Major?
+                        | Not a big deal at all. The program embraces any and all that
+                        | want to try something new (especially when it's free
+                        | software)! As long as you are a student of LHU and plan to
+                        | actively give your account a try, you're eligable to sign up.
+
+                    h1.heading See who's online!
+
+                section#penguin-account.container.content.twocol.right
+                    h1.heading Penguin Login
+                    form#penguin-login(action="")
+                        ul
+                            li
+                                input(type="text", placeholder="username")
+                            li
+                                input(type="password", placeholder="password")
+                            li.hidden
+                               p.error
+                            li
+                                button(type="button") Login
+                    h1.heading Sign up for an account
             #content-penguin-webmail.content
+                p Coming soon
+            #content-penguin-faq.content
+                p Coming soon
             table#content-penguin-submenu.submenu
                 tr
                     td.submenuitem about
@@ -56,11 +99,14 @@ block markup
                     td.submenuitem FAQ
 
         #content-students.hidden
+            #content-penguin-featured.content
+                p Featured students coming soon
+            #content-penguin-courses.content
+                p Course description coming soon
             table#content-students-submenu.submenu
                 tr
                     td.submenuitem featured
                     td.submenuitem courses
-                    td.submenuitem another-menu
                     
 
         #content-faculty.hidden
@@ -71,7 +117,7 @@ block markup
                     td.submenuitem others
 
         #content-clubs.hidden
-            table#content-faculty-submenu.submenu
+            table#content-clubs-submenu.submenu
                 tr
                     td.submenuitem clubs@penguin
                     td.submenuitem ACM
@@ -89,9 +135,9 @@ block markup
                     td.submenuitem coding club
                     td.submenuitem open threads
 
-    #modal.hidden
-        #modal-overlay
-        #modal-manage-container
+    #modal
+        #modal-overlay.hidden
+        #modal-manage-container.hidden
             .bounds
                 #modal-manage-content
                     .wrapper
@@ -111,9 +157,9 @@ block markup
                             li.modal-menu-item blog
                             li.modal-menu-item admin
                     .modal-close X
-        #modal-post-container
+        #modal-post-container.hidden
             .bounds
                 #modal-post-content
-                .modal-close
-                .modal-minimize
+                #modal-post-close.modal-close x
+                #modal-post-minimize.modal-minimize _
 

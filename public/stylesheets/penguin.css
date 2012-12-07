@@ -4,7 +4,8 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 
 
 /* Content & Font specific */ 
-	.content { padding: 5px; position: relative; width: 100%; height: 95%; }
+	.content { padding: 5px; position: relative; width: 100%; height: 95%; 
+		overflow-y: auto; overflow-x: hidden; }
 	.container { height: inherit; width: inherit; }
 	.wrapper { position: relative; width:100%; padding: 5px; }
 	.bounds { height: 100%; overflow: hidden; position: relative; width:100%; }
@@ -50,18 +51,51 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 /* Modal specific */	
 	.modal-close { background: #BBB; color: #EEE; font-size: 1.3em; padding-left: 5px;
 		padding-right: 5px; position: absolute; right: 0.5%; top: 0.5%; }
+	.modal-minimize { background: #BBB; color: #EEE; font-size: 1.3em; padding-left: 5px;
+		padding-right: 5px; position: absolute; right: 4.5%; top: 0.5%; }
 	.modal-close:hover { background: #999; color: white; cursor: pointer; }
+	.modal-minimize:hover { background: #999; color: white; cursor: pointer; }
 
 	.modal-menu { font-size: 2em; list-style: none; margin: 0; padding-left: 5px; }
 
 	.modal-submenu { font-size: 1.4em; padding: 0; position: absolute; 
 		text-align: center; top: 10%; width: 100%; }
 
+	.modal-menu-item { width: 100%; }
 	.modal-menu-item:hover { border-left: 8px solid darkred; cursor: pointer; }
 	.modal-menu-item:active { background: #BBB; border: 0 !important;
 		box-shadow: 0px 1px 4px 0px #777; cursor: normal !important; }
 
 
+	
+/* Form specific */
+	form input[type=text], input[type=password] { background-color: white; 
+		border-left-color: transparent; border-left-style: solid;
+		border-width: 0px 0px 0px 4px; height: 2em; outline: none; padding-left: 10px;
+		width: 50%; }
+
+	form input[type=text]:focus, input[type=password]:focus {
+		border-left-color: darkred; }
+
+	form input[placeholder="username"] { 
+		background-image: url('/images/hero_cosmic.png');
+		background-color: white !important; background-position: 97% 50% !important;
+		background-repeat: no-repeat no-repeat !important; }
+
+	form input[placeholder="password"] {
+		background-image: url('/images/lock.png');
+		background-color: white !important ; background-position: 97% 50% !important;
+		background-repeat: no-repeat no-repeat !important; }
+
+	button {
+		border-width: 0px 0px 0px 4px;
+		border-color: transparent;
+	}
+
+	button:focus, button:hover {
+		border-color: darkred;
+		cursor: pointer;
+	}
 	
 
 /* Triangle specific */
@@ -116,7 +150,6 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	#modal-manage-aside { background: #DDD; color: #333; height: 100%; position: absolute;
 		right: 0; text-shadow: 0px 1px white; width: 25%; }
 
-		findAll( where: {} );
 	#manage-main-menu { bottom: 0; position: absolute; width: 100%; }	
 
 
@@ -125,9 +158,9 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	#modal-post-container { background-color: #333; border-right-color: darkRed; 
 		border-right-style: solid; border-right-width: 0px; 
 		box-shadow: black 3px 0px 24px -3px; display: block; height: 100%; left: 0px; 
-		opacity: 0.99; position: absolute; top: 0px; width: 600px; z-index: 5000; }
+		opacity: 0.99; position: absolute; top: 0px; width: 600px; z-index:1000 ; }
 
-	#modal-post-content { padding-top: 25px; }
+	#modal-post-content { padding-top: 35px; }
 
 	#post-loupe-container { float: left; margin-bottom: 15px; width: 50%; }
 
@@ -143,6 +176,12 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	#post-author-data { display: inline; float: right; list-style: none; margin: 0;
 		padding: 0; }
 
+
+/* Login form */
+	#penguin-login { text-align: center;  }
+
+	#penguin-login ul { list-style: none; padding: 0; }
+	#penguin-login li { padding-top: 5px; }
 	
 
 

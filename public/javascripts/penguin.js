@@ -1,6 +1,4 @@
 var penguin = {
-	
-
 	Post: {
 		postViewOpen: false,
 		postViewMini: false,
@@ -23,6 +21,10 @@ var penguin = {
 			self._createArticle(postData);
 			// unAjaxElement('#modal-post-container');
 		}
+	},
+
+	Resize: {
+		register: []
 	},
 
 	// Functions to handle all Penguin app events
@@ -196,11 +198,47 @@ var penguin = {
 				penguin._slateShow(newSlate);
 			});
 		},
+		
+		// EVENT - Click on a submenu element and change slate
+		e_clickOnSubMenuElement_slateChange: function(elem, id) {
+			var idx		= $(elem).index(),
+				toHide	= null,
+				toShow	= null;
+			
+			switch (id) {
+				case 'penguin':
+					toHide = $('#content-penguin').children(':visible').not('.submenu');
+					toShow = $('#content-penguin').children()[idx];
+					break;
+				case 'students':
+					toHide = $('#content-students').children(':visible').not('.submenu');
+					toShow = $('#content-students').children()[idx];
+					break;
+				case 'faculty':
+					toHide = $('#content-faculty').children(':visible').not('.submenu');
+					toShow = $('#content-faculty').children()[idx];
+					break;
+				case 'clubs':
+					toHide = $('#content-clubs').children(':visible').not('.submenu');
+					toShow = $('#content-clubs').children()[idx];
+					break;
+				case 'blog':
+					toHide = $('#content-blog').children(':visible').not('.submenu');
+					toShow = $('#content-blog').children()[idx];
+					break;
+				default:
+					break;
+			}
+
+			$(toHide).hide();
+			$(toShow).show();
+		},
 	
 		/* POST MODAL EVENTS */
 		
 		// EVENT - Show the post-viewer modal (shows from left)
 		e_showPostModal: function (e) {
+			$('#modal-post-container').removeClass('hidden');
 			$('#modal-post-container').show('slide', {direction: 'left'}, 200);	
 			penguin.Post.postViewOpen = true;
 		},
@@ -223,7 +261,120 @@ var penguin = {
 			penguin.Post.postViewMini = false;
 		},
 
+		/* FORM & INPUT EVENTS */
+
+		// EVENT - Keyup on a username input field
+		e_validateUser: function (e) {
+			var elem = $(this),
+				btn	 = $('#penguin-form').find('button'),
+				user = '/images/hero_cosmic.png',
+				chk  = '/images/tickbox.png',
+				warn = '/images/warning.png';
+
+
+			if (elem.val() == '') {
+				elem.css('background', 'url('+user+')');
+				if (btn.data('active')) {
+					penguin._toggleButton(btn);
+				}
+			}
+			else if (!penguin._checkUser(elem.val())) {
+				elem.css('background', 'url('+warn+')');
+				if (btn.data('active')) {
+					penguin._toggleButton(btn);
+				}
+			}
+			else {
+				elem.css('background', 'url('+chk+')');
+				/*if (!btn.data('active')){
+					penguin._toggleButton(btn);
+				}*/
+			}
+		},
+
+		// EVENT - Keyup on a password input field
+		e_validatePass: function (e) {
+			var elem = $(this),
+				btn	 = $('#penguin-form').find('button'),
+				lock = '/images/lock.png',
+				chk  = '/images/tickbox.png',
+				warn = '/images/warning.png';
+
+			if (elem.val() == '') {
+				elem.css('background', 'url('+lock+')');
+				if (btn.data('active')) {
+					penguin._toggleButton(btn);
+				}
+			}
+			else if (!penguin._checkPass(elem.val())) {
+				elem.css('background', 'url('+warn+')');
+				if (btn.data('active')) {
+					penguin._toggleButton(btn);
+				}
+			}
+			else {
+				elem.css('background', 'url('+chk+')');
+			/*	if (!btn.data('active')) {
+					penguin._toggleButton(btn);
+				}*/
+			}
+		},
+
+		e_login: function () {
+			var form = $('#penguin-login'),
+				user = form.find('input[type="text"]').val() || null,
+				pass = form.find('input[type="password"]').val() || null;
+
+			if (user == null || pass == null) {
+				form.find('.error')
+					.html('Make sure user and pass entered.')
+					.parent().removeClass('hidden');
+			} else {
+				$.ajax({
+					url: '/login',
+					type: 'POST',
+					data: {
+						user: user,
+						pass: pass
+					},
+					success: function (res) {
+						if (res.error) {
+							form.find('.error').html('Bad login')
+								.parent()
+								.removeClass('hidden');
+							
+							form.find('input[type="password"]').val('');
+						} else {
+							//window.location = '/';
+						}
+					}
+				})	
+			}
+		},
+
 		/* MANAGEMENT MODAL EVENTS */
+		e_showManagementModal: function (e) {
+			var mo = $('#modal-overlay'),
+				mm = $('#modal-manage-container');
+
+			if (!mm.is(':visible')) {
+				mo.removeClass('hidden');
+				mm.slideDown('clip').removeClass('hidden');
+			}
+		},
+
+		e_hideManagementModal: function (e) {
+			var mo = $('#modal-overlay'),
+				mm = $('#modal-manage-container');
+
+			if (mm.is(':visible')) {
+				mm.slideUp(function () {
+					mo.addClass('hidden');
+					$(this).addClass('hidden');
+				});
+			}
+			
+		},
 
 		/* LOUPE MODAL EVENTS */
 
@@ -290,6 +441,68 @@ var penguin = {
 			$('#sidebar-menu-blog').click(function () {
 				self.Events.e_clickOnMainMenuElement_slateChange('blog');
 			});
+
+			// EVENT BIND - Penguin Sub-menu item click
+			$('#content-penguin-submenu').find('.submenuitem').each(function(idx, item) {
+				$(item).bind('click', function (e) {
+					self.Events.e_clickOnSubMenuElement_slateChange(this, 'penguin');
+				});
+			});
+			// EVENT BIND - Students Sub-menu item click
+			$('#content-students-submenu').find('.submenuitem').each(function(idx, item) {
+				$(item).bind('click', function (e) {
+					self.Events.e_clickOnSubMenuElement_slateChange(this, 'students');
+				});
+			});
+			// EVENT BIND - Faculty Sub-menu item click
+			$('#content-faculty-submenu').find('.submenuitem').each(function(idx, item) {
+				$(item).bind('click', function (e) {
+					self.Events.e_clickOnSubMenuElement_slateChange(this, 'faculty');
+				});
+			});
+			// EVENT BIND - Clubs Sub-menu item click
+			$('#content-clubs-submenu').find('.submenuitem').each(function(idx, item) {
+				$(item).bind('click', function (e) {
+					self.Events.e_clickOnSubMenuElement_slateChange(this, 'clubs');
+				});
+			});
+			// EVENT BIND - Blog Sub-menu item click
+			$('#content-blog-submenu').find('.submenuitem').each(function(idx, item) {
+				$(item).bind('click', function (e) {
+					self.Events.e_clickOnSubMenuElement_slateChange(this, 'blog');
+				});
+			});
+
+
+			// EVENT BIND - Post modal close button
+			$('#modal-post-close').bind('click', self.Events.e_hidePostModal);
+
+			// EVENT BIND - Post modal minimize maximize toggle
+			$('#modal-post-minimize').bind('click', function () {
+				var elem = $(this);
+				if (self.Post.postViewMini) {
+					self.Events.e_maximizePostModal();
+					elem.html('_');
+				} else {
+					self.Events.e_minimizePostModal();
+					elem.html('+');
+				}
+			});
+
+			// EVENT BIND - Management modal open link click
+			$('#sidebar-welcome').bind('click', self.Events.e_showManagementModal);
+			$('#modal-manage-aside')
+				.find('.modal-close')
+				.bind('click', self.Events.e_hideManagementModal);
+
+
+			// EVENT BIND - Validate username input
+			$('input[placeholder="username"]').bind('keyup', self.Events.e_validateUser);
+			$('input[placeholder="password"]').bind('keyup', self.Events.e_validatePass);
+
+			// EVENT BIND - Button login
+			$('#penguin-login').find('button').bind('click', self.Events.e_login);
+
 	},
 
 	Init: function () {
@@ -301,11 +514,33 @@ var penguin = {
 		/* MENU RELATED */
 
 		// Set the first item in the main menu as the default
-		/*$('#sidebar-menu').children(':first').data('active', true)
-			.addClass('menuitemactive').children('.triangle').toggleClass('hidden');*/
+		$('#sidebar-menu').children(':first').data('active', true)
+			.css({
+				'background'	: 'white',
+				'border-left'	: 'none',
+				'box-shadow'	: '-6px 2px 19px -2px #333',
+				'color'			: '#333',
+				'cursor'		: 'pointer'
+			}).children('.triangle').toggleClass('hidden');
+
+		// Set first items of all submenus to active
+		$('.submenu').find('.submenuitem:first').each(function(idx, item){
+			$(item).addClass('submenuactive').data('active', true);
+		});
+
+		// Hide all non-active content elements
+		$('#content-penguin').children().not('.submenu').not(':first').hide()
+		$('#content-students').children().not('.submenu').not(':first').hide()
+		$('#content-faculty').children().not('.submenu').not(':first').hide()
+		$('#content-clubs').children().not('.submenu').not(':first').hide()
+		$('#content-blog').children().not('.submenu').not(':first').hide()
+		/*-- END MENU RELATED */
 
 		// Load latest news
 		self.loadLatestNews('#latest-news');
+
+		// Set login and register buttons to inactive
+	//	self._toggleButton($('#penguin-login').find('button').data('active', true));
 
 	},
 
@@ -584,6 +819,9 @@ var penguin = {
 			height   = (elem.height() / 2) - (loader.height() / 2),
 			width    = (elem.width() / 2) - (loader.width() / 2);
 
+		console.log('ELEM HEIGHT BEFORE:' + elem.height());
+		elem.css('height', elem.height());
+
 		loadCtnr.append(loader);
 		elem.children().hide();
 		elem.append(loadCtnr);
@@ -593,11 +831,50 @@ var penguin = {
 			position: 'absolute',
 			top: height
 		});
+
+		console.log('ELEM HEIGHT AFTER:' + elem.height());
 	},
 
-	_unAjaxElement: function(elem) {
+	_unAjaxElement: function (elem) {
 		elem = (elem instanceof jQuery) ? elem : $(elem);
+		elem.css('height', 'auto');
 		var loader = elem.find('#temp-load').hide();
 		elem.children().not(loader).show();
+	},
+
+	_checkUser: function (username) {
+		var usregx = /^[A-Za-z0-9_]{3,20}$/;
+		if (usregx.test(username)) {
+			return true;
+		}
+		return false;
+	},
+
+	_checkPass: function (password) {
+		var passregx = /^[A-Za-z0-9!@#$%\^&*()_]{6,20}$/;
+		if (passregx.test(password)) {
+			return true;
+		}
+		return false;
+	},
+	_toggleButton: function (elem, fn) {
+		elem = (elem instanceof jQuery) ? elem : $(elem);
+
+		if (!elem.data('active')) {
+			elem.data('active', true);
+			elem.css({
+				cursor: 'pointer',
+				opacity: '1.0'
+			});
+			elem.bind('click', fn);
+		} else {
+			elem.data('active', false);
+			elem.css({
+				cursor: 'none',
+				opactiy: '0.7'
+			});
+			elem.unbind('click', fn);
+		}
+
 	}
 }

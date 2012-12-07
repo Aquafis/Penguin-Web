@@ -15,5 +15,28 @@ html
     script(type="text/javascript",
         src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.0/jquery-ui.min.js")
     script(type="text/javascript", src="/javascripts/penguin.js")
+    script(type="text/javascript", src="socket.io/socket.io.js")
+    
+    script(type="text/javascript")
+        var sock = io.connect('localhost');
+        sock.on('conn', function (data) {
+            console.log('RTN: ' + data.success);
+        });
+
+        sock.on('broadcast', function (data) {
+            console.log('RTN BROADCAST:' + data.message);
+        });
+
+        sock.on('msg', function (data) {
+            alert('RTN MSG:' + data.message);
+        });
+        $(document).ready(function () {
+            penguin.Init();
+        });
+
+        sock.on('cdump', function (data) {
+            console.log(data);
+        });
+
   body
       block markup
