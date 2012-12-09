@@ -728,7 +728,12 @@ var penguin = {//
 	loadLatestNews: function (elem, callback) {
 		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
 		var self = this,
-			page = 1;
+			page = 1
+			size = 10;
+
+		// Calculate pagination size based on size of content (prevents init scroll)
+		size =
+			Math.round((elem.parent().height() - elem.position().top) / 35);
 
 		// Factor in paging
 		if (elem.data('paging')) {
@@ -738,8 +743,9 @@ var penguin = {//
 		// Fetch the latest post data
 		$.ajax({
 			url: '/latest',
-			data: { page: page, size: 10 },
+			data: { page: page, size: size },
 			success: function (articles) {
+				var more;
 
 				// Add meta & paging data to parent element
 				elem.data('paging', articles.paging);
@@ -757,10 +763,24 @@ var penguin = {//
 					articleCollection.push(articleRow);
 				});
 
+				// Detach  the old Load more
+				if (page > 1) {
+					more = elem.find('.more').detach();
+				}
+				
 				// Seqentially show articles loaded
 				(function() {
 					$(articleCollection[i++]).show('fast', arguments.callee);	
 				})();
+
+				// Add/Create load more
+				if (page == 1) {
+					more = $('<a class="more" href="#">Load more</a>');
+					more.bind('click', function () {
+						penguin.loadLatestNews(elem);
+					});
+				}
+				elem.append(more);
 
 				if (callback) {
 					callback(data);

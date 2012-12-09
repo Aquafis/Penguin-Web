@@ -31,8 +31,8 @@ var db = {
 		console.log('connecting...');
 
 		self._sqlize = new Sequelize(
-				'penguin',
-				'penguin',
+				'penguin2',
+				'penguin2',
 				'ou8one2',
 				{
 					host: 'localhost',
