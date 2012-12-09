@@ -11,8 +11,9 @@ module.exports = function (sequelize, DataTypes) {
 			validate: { isUUID: 4 }
 		},
 		COMMENT_ID: {
-			type: DataTypes.INTEGER,
-			allowNull: false
+			type: DataTypes.STRING,
+			allowNull: false,
+		    validate: { isUUID: 4 }
 		},
 		CREATED: {
 			type: DataTypes.DATE,

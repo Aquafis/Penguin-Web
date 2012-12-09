@@ -1,4 +1,23 @@
-var penguin = {
+var penguin = {//
+
+	Resize: {
+
+		// TODO RESIZE REGISTER FUNCTIONS
+		// Post Modal Content
+		// management modal
+		// All post-containers will need to re-compute default pagination count
+		//		based on element height to parent floor
+		// 
+		register: [],
+		all: function () {
+
+		},
+
+		priority: function (min, max) {
+
+		}
+	},
+
 	Post: {
 		postViewOpen: false,
 		postViewMini: false,
@@ -345,7 +364,7 @@ var penguin = {
 							
 							form.find('input[type="password"]').val('');
 						} else {
-							//window.location = '/';
+							window.location = '/';
 						}
 					}
 				})	
@@ -748,6 +767,10 @@ var penguin = {
 				}
 			}
 		});
+	},
+
+	getNotification: function (id) {
+
 	},
 
 	_buildSmallArticleMarkup: function (article) {

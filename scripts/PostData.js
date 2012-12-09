@@ -9,6 +9,7 @@ exports.randomPost = function (maxBlog, authorId, mediaId) {
 
 	var P = {
 		BLOG_ID: n.integerInRange(0, maxBlog),
+		AUTHOR: 'HAY SUES',
 		AUTHOR_ID: authorId || n.integerInRange(1, 1000),
 		CREATED: new Date(n.timestamp(Date.parse('2012-JAN-01'), Date.parse('2012-DEC-31'))),
 		TITLE: n.words(n.integerInRange(2, 10)),

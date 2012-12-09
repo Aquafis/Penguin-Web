@@ -19,6 +19,8 @@ var db = {
 		processUser: null,
 		author: null,
 		post: null,
+		comment: null,
+		notification: null,
 		media: null,
 		_fetched: false
 	},
@@ -29,8 +31,8 @@ var db = {
 		console.log('connecting...');
 
 		self._sqlize = new Sequelize(
-				'penguin2',
-				'penguin2',
+				'penguin',
+				'penguin',
 				'ou8one2',
 				{
 					host: 'localhost',
@@ -52,6 +54,10 @@ var db = {
 			self._sqlize.import(__dirname + '/db/models/Author.js');
 		self.Models.post =
 			self._sqlize.import(__dirname + '/db/models/Post.js');
+		self.Models.comment =
+			self._sqlize.import(__dirname + '/db/models/Comment.js');
+		self.Models.notification =
+			self._sqlize.import(__dirname + '/db/models/Notification.js');
 		self.Models.media =
 			self._sqlize.import(__dirname+ '/db/models/Media.js');
 

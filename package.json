@@ -6,9 +6,10 @@
     "start": "node app"
   },
   "dependencies": {
-    //"express": "3.0.0rc4",
+	"connect": "*",
 	"express": "3.0.3",
 	"express-params": "*",
+	"cookie": "*",
     "jade": "*",
     "sequelize": "*",
 	"socket.io": "*"

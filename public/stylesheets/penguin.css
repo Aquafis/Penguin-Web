@@ -10,7 +10,7 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	.wrapper { position: relative; width:100%; padding: 5px; }
 	.bounds { height: 100%; overflow: hidden; position: relative; width:100%; }
 
-	.heading { font-weight: normal; margin: 0; color: darkred; 
+	.heading { font-weight: normal; margin: 0; color: #8AB509; 
 		background: #EEE; padding-left: 5px; padding-top: 5px; 
 		border-radius: 6px 0px 6px 0px; }
 	p { font-size: 0.8em; line-height: 1.3em; }
@@ -22,7 +22,7 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 		width: 100%; }
 	.article { background: #444; opacity: 0.8; }
 	.article:hover { cursor: pointer; opacity: 1; }
-	.article-header { border-left: 5px solid darkred; font-size: 1.0em; padding: 5px; 
+	.article-header { border-left: 5px solid #8AB509; font-size: 1.0em; padding: 5px; 
 		vertical-align: top; width: 40%;  }
 	.article-teaser { font-size: 0.7em; padding: 5px; vertical-align: top;
 		width: 40%; }
@@ -41,9 +41,9 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	.submenu { bottom: 8px; position: absolute; text-align: center; }
 	.submenuitem { padding-left: 15px; padding-right: 15px; }
 	.submenuhover { box-shadow: 0px 8px 0px 0px white; cursor: pointer; }
-	.submenuactive { background: white; color: darkred; cursor: pointer !important; }
+	.submenuactive { background: white; color: #8AB509; cursor: pointer !important; }
 
-	.submenu-notification { background: darkRed; border: 1px solid white; 
+	.submenu-notification { background: #8AB509; border: 1px solid white; 
 		color: white; font-size: 0.6em; padding-left: 3px; padding-right: 3px; 
 		position: absolute; right: 5%; text-shadow: none; top: 20%; }
 
@@ -62,7 +62,7 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 		text-align: center; top: 10%; width: 100%; }
 
 	.modal-menu-item { width: 100%; }
-	.modal-menu-item:hover { border-left: 8px solid darkred; cursor: pointer; }
+	.modal-menu-item:hover { border-left: 8px solid #8AB509; cursor: pointer; }
 	.modal-menu-item:active { background: #BBB; border: 0 !important;
 		box-shadow: 0px 1px 4px 0px #777; cursor: normal !important; }
 
@@ -75,7 +75,7 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 		width: 50%; }
 
 	form input[type=text]:focus, input[type=password]:focus {
-		border-left-color: darkred; }
+		border-left-color: #8AB509; }
 
 	form input[placeholder="username"] { 
 		background-image: url('/images/hero_cosmic.png');
@@ -93,7 +93,7 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	}
 
 	button:focus, button:hover {
-		border-color: darkred;
+		border-color: #8AB509;
 		cursor: pointer;
 	}
 	
@@ -110,7 +110,7 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	.triangle-small-right { border-right: 10px solid #333; }
 
 /* Color and non-parent specific classes */
-	.primarycolor { background: darkred; }
+	.primarycolor { background: #8AB509; }
 	.secondarycolor { background: #444; }
 	.hidden { display: none !important; }
 	.left { float: left; }
@@ -132,6 +132,9 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 
 	#sidebar-menu .triangle { display: inline-block; float: right; height: 100%; 
 		min-height: 25%; }
+
+	#sidebar-welcome { color: white; display: inline; font-size: 0.8em; 
+		padding: 3px; }
 
 /* Content related */
 	#content { background: #333; height: 100%; margin-left: 250px; }
@@ -155,7 +158,7 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 
 /* Blog view specific */
 
-	#modal-post-container { background-color: #333; border-right-color: darkRed; 
+	#modal-post-container { background-color: #333; border-right-color: #8AB509; 
 		border-right-style: solid; border-right-width: 0px; 
 		box-shadow: black 3px 0px 24px -3px; display: block; height: 100%; left: 0px; 
 		opacity: 0.99; position: absolute; top: 0px; width: 600px; z-index:1000 ; }

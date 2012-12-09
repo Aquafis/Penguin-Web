@@ -30,7 +30,7 @@ params.extend(app);
 
 /* Express Configuration */
 app.configure(function(){
-  app.set('port', process.env.PORT || 80);
+  app.set('port', process.env.PORT || 8000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
@@ -119,6 +119,11 @@ rtn.sockets.on('connection', function (socket) {
 			console.log('SESSION DATA: %j ', hs.session);
 			socket.emit('cdump', {session: hs.session});
 		});
+	});
+
+	socket.on('disconnect', function () {
+		rtn.log.debug('Goodbye: ' + hs.sessionID);
+		clearInterval(intID);
 	});
 });
 
