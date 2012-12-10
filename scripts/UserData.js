@@ -12,7 +12,7 @@ exports.randomUser = function () {
 		LAST: n.lastName(),
 		STUID: util.createSTUID(),
 		ADMIN: util.randBOOL(),
-		AUTHOR: 1 || util.randBOOL(),
+		AUTHOR: util.randBOOL(),
 		FACULTY: util.randBOOL(),
 		FEATURED: util.randBOOL()
 	};

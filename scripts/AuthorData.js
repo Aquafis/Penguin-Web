@@ -3,9 +3,9 @@ var Nonsense = require('./nonsense/Nonsense.js'),
 
 var n = new Nonsense();
 
-exports.randomAuthor = function (UUID, BLOG_ID) {
+exports.randomAuthor = function (UUID, blogSize) {
 	var A = {
-		BLOG_ID: BLOG_ID || n.integerInRange(1, 100),
+		BLOG_ID:  n.integerInRange(1, blogSize),
 		CREATED: new Date(n.timestamp(Date.parse('2012-JAN-01'), Date.parse('2012-DEC-31'))),
 		POSTCOUNT: 0
 	};

@@ -32,13 +32,13 @@ exports.many = function (req, res, next) {
 			where: res.locals.where
 		})
 		.success(function (blogs) {
-
+			var blogsWithAuthors = [];
 			for (var i in blogs) {
-				getAuthors(blogs[i].BLOG_ID, function (authors) {
-					blogs[i].AUTHORS = authors;
-					if (i == blogs.length) {
+				attachAuthors(blogs[i], function (blogWAuthor) {
+					blogsWithAuthors.push(blogWAuthor);
+					if (blogsWithAuthors.length == blogs.length) {
 						res.locals.data = {
-							data: blogs,
+							data: blogsWithAuthors,
 							meta: {
 								count: blogs.length,
 								total: res.locals.total,
@@ -66,10 +66,8 @@ exports.single = function (req, res, next) {
 		where: res.locals.where
 	})
 	.success(function (blog) {
-		getAuthors(blog.BLOG_ID, function (authors) {
-			blog.AUTHORS = authors;
-			console.log(blog.AUTHORS);
-			res.locals.data = blog;
+		attachAuthors(blog, function (blogWithAuthor) {
+			res.locals.data = blogWithAuthor;
 			next();
 		});
 	})
@@ -79,15 +77,18 @@ exports.single = function (req, res, next) {
 	});
 }
 
-function getAuthors (blogId, fn) {
+function attachAuthors (blog, fn) {
+	blog.attributes.splice(5, 0, 'AUTHORS');
+
 	db.Models.author.findAll({
-		where: { BLOG_ID: blogId }
+		where: { BLOG_ID: blog.BLOG_ID }
 	})
 	.success(function (authors) {
-		console.log('AUTHORS: %j', authors );
-		fn(authors);
+		blog.AUTHORS = authors;
+		fn(blog);
 	})
 	.error (function (err) {
-		fn([]);
+		blog.AUTHORS = [];
+		fn(blog);
 	});
 }

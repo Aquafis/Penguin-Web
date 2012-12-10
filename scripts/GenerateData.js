@@ -59,8 +59,12 @@ function createData () {
 	}
 
 	// Create Authors
-	for (i = 0; i < 30; i++) {
-		authors.push(AD.randomAuthor(n.pick(userUUIDs), n.pick(blogs).BLOG_ID));
+	for (i = 0; i < userUUIDs.length; i++) {
+		var uuid = n.pick(userUUIDs);
+		authors.push(AD.randomAuthor(uuid, blogs.length));
+
+		console.log(authors[i]);
+		addAuthorIDToUser(uuid, i+1);
 	}
 
 
@@ -135,6 +139,13 @@ function createData () {
 				console.log('Could not save comment: %j', comments[comment]);
 			});
 	}
+}
+
+function addAuthorIDToUser (userUUID, authorId) {
+	db.Models.user.find({where: { UUID: userUUID }}).success(function(user) {
+		user.AUTHOR_ID = authorId;
+		user.save();
+	});
 }
 
 function createNotification (author_id, poster_id) {

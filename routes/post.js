@@ -34,20 +34,28 @@ exports.many = function (req, res, next) {
 			order: 'CREATED DESC'
 		})
 		.success(function (posts) {
-			res.locals.data = {
-				data: posts,
-				meta: {
-					count: posts.length,
-					total: res.locals.total,
-				},
-				paging: {
-					pages: res.locals.pages,
-					page: res.locals.page,
-					next: res.locals.next,
-					prev: res.locals.prev
-				}
-			};
-			next();
+			var postsWithAuthors = [];
+			for (var i in posts) {
+				attachAuthor(posts[i], function (postWithAuthor) {
+					postsWithAuthors.push(postWithAuthor);
+					if (postsWithAuthors.length == posts.length) {
+						res.locals.data = {
+							data: postsWithAuthors,
+							meta: {
+								count: posts.length,
+								total: res.locals.total,
+							},
+							paging: {
+								pages: res.locals.pages,
+								page: res.locals.page,
+								next: res.locals.next,
+								prev: res.locals.prev
+							}
+						};
+						next();
+					}
+				})
+			}
 		})
 		.error(function (err) {
 			res.locals.error = err;
@@ -67,4 +75,18 @@ exports.single = function (req, res, next) {
 		res.locals.error = err;
 		next();
 	});
+}
+
+
+function attachAuthor(post, fn){
+
+	db.Models.user.find({ where: { AUTHOR_ID: post.AUTHOR_ID } })
+		.success(function (author) {
+			post.attributes.splice(4, 0, 'AUTHOR');
+			post.AUTHOR = author;
+			fn(post);
+		})
+		.error (function (err) {
+			fn(post);
+		});
 }
