@@ -35,9 +35,6 @@ implemented. This can be expected to be released late January of 2013.
 # Query Parameters
 ## GET
 * ### Size
-	> Accepts: Integers greater than 1 (else default paging returned)
-	> Purpose: Size simply determines the non-default paging size.
-	> Example: `?size=4`
 
 ## POST
 
