@@ -10,7 +10,7 @@ exports.paginate = function (req, res, next) {
 	res.locals.page = parseInt(req.param('page'), 10) || 1;
 	res.locals.offset = 
 		(res.locals.page == 1) ? 0 : (res.locals.page * page_size)-page_size;
-	if (res.locals.where) { db.Models.user .count({where: res.locals.where})
+	if (res.locals.where) { db.Models.user.count({where: res.locals.where})
 			.success(function(count) {
 				res.locals.total = count;
 				res.locals.pages = Math.ceil(res.locals.total / page_size);
@@ -30,7 +30,7 @@ exports.paginate = function (req, res, next) {
 
 // Multiple users
 
-exports.many = function (req, res) {
+exports.many = function (req, res, next) {
 	db.Models.user
 		.findAll({
 			offset: res.locals.offset,
@@ -38,11 +38,11 @@ exports.many = function (req, res) {
 			where: res.locals.where
 		})
 		.success(function (users) {
-			res.json({
+			res.locals.data = {
 				data: users,
 				meta: {
 					count: users.length,
-					total: res.locals.total,
+					total: res.locals.total
 				},
 				paging: {
 					pages: res.locals.pages,
@@ -50,10 +50,12 @@ exports.many = function (req, res) {
 					next: res.locals.next,
 					prev: res.locals.prev
 				}
-			});
+			}
+		next();
 		})
 		.error(function (err) {
-			res.json(500, {error: err});
+			res.locals.error = err;
+		next();
 		});
 }
 
@@ -61,38 +63,44 @@ exports.online = function (req, res){};
 exports.featured = function (req, res) {};
 exports.faculty = function (req, res) {};
 
-exports.name = function (req, res){
+exports.name = function (req, res, next){
 	db.Models.user
 		.find({ where: res.locals.where })
 		.success( function (student) {
-			res.json({ data: student });
+			res.locals.data = student;
+			next();
 		})
 		.error( function (err) {
-			res.json(500, { error: err });
+			res.locals.error = err;
+			next();
 		});
 };
 
 
-exports.fullName = function (req, res){
+exports.fullName = function (req, res, next){
 	db.Models.user
 		.find({ where: res.locals.where })
 		.success( function (student) {
-			res.json({ data: student });
+			res.locals.data = student;
+			next();
 		})
 		.error( function (err) {
-			res.json(500, { error: err });
+			res.locals.error = err;
+			next();
 		});
 };
 
 // Single User 
-exports.byStuId = function (req, res) {
+exports.byStuId = function (req, res, next) {
 	db.Models.user
 		.find({ where: {STUID: req.params.stuid }})
 		.success( function (student) {
-			res.json({ data: student });
+			res.locals.data = student;
+			next();
 		})
 		.error( function (err) {
-			res.json(500, { error: err });
+			res.locals.error = err;
+			next();
 		});
 }
 	

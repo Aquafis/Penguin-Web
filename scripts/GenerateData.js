@@ -14,6 +14,7 @@ var n = new Nonsense();
 // Connect, import schema, refresh database
 db.Connect();
 db.fetchModels();
+db.createRelations();
 db.overwriteModels(createData);
 
 
@@ -42,7 +43,7 @@ function createData () {
 
 	// Create new process users
 	for (i = 0; i < 50; i++) {
-		
+
 		var puser = PUD.randomPUser();
 		var newPUser = db.Models.processUser.build(puser);
 		newPUser.save()
@@ -63,7 +64,7 @@ function createData () {
 	}
 
 
-	
+
 	// Create new blog posts
 	for (i = 0; i < 1000; i++) {
 		var post = PD.randomPost(blogs.length, n.integerInRange(1, authors.length));
@@ -73,7 +74,7 @@ function createData () {
 		blogs[posts[i].BLOG_ID].POSTCOUNT++;
 		authors[posts[i].AUTHOR_ID].POSTCOUNT++;
 	}
-	
+
 
 	// Save Blogs
 	for (var blog in blogs) {
@@ -118,7 +119,7 @@ function createData () {
 		// Let's find the OP, is he or she a faggot?
 		// We needed the ID from the comment for notifications, we can store now
 		comments.push(comment);
-		createNotification (post.AUTHOR_ID, comment_uuid);
+		//createNotification (post.AUTHOR_ID, comment_uuid);
 
 	}
 

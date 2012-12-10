@@ -31,8 +31,8 @@ var db = {
 		console.log('connecting...');
 
 		self._sqlize = new Sequelize(
-				'penguin2',
-				'penguin2',
+				'penguin',
+				'penguin',
 				'ou8one2',
 				{
 					host: 'localhost',
@@ -66,14 +66,21 @@ var db = {
 
 	_createRelations: function () {
 		var self = this;
-		if (!this.Models._fetched) return;
 
+		// Blog relationships
+		self.Models.blog.hasMany(self.Models.author, {
+			as: 'Authors',
+			foreignKey: 'BLOG_ID',
+			joinTableName: 'Authors'
+		});
+
+		/*
 		// Blog Relationships
 		this.Models.user.hasOne(self.Models.blog, {
 			as: 'Owner',
 			foreignKey: 'OWNER_UUID',
 			type: self._sqlize.STRING
-		});
+		});(*/
 	},
 
 	_overwriteModels: function (callback) {

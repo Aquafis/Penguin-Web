@@ -30,7 +30,7 @@ params.extend(app);
 
 /* Express Configuration */
 app.configure(function(){
-  app.set('port', process.env.PORT || 80);
+  app.set('port', process.env.PORT || 8000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
@@ -145,6 +145,14 @@ function filterXHR (req, res, next) {
 	}
 }
 
+function apiResponse (req, res, next) {
+	if (res.locals.error) {
+		res.json(500, {error: res.locals.error});
+	} else {
+		res.json(res.locals.data);
+	}
+}
+
 
 /* ROUTES */
 
@@ -221,34 +229,34 @@ app.post('/signup', function (req, res) {
 /* USERS */
 
 // Get user by student ID
-app.get('/users/:stuid', user.byStuId);
+app.get('/users/:stuid', user.byStuId, apiResponse);
 
 // Get all users
-app.get('/users', user.paginate, user.many);
+app.get('/users', user.paginate, user.many, apiResponse);
 
 // Get all admins
 app.get('/users/admin', function (req, res, next) {
 	res.locals.where = {admin: true};
 	next();
-}, user.paginate, user.many);
+}, user.paginate, user.many, apiResponse);
 
 // Get all authors
 app.get('/users/author', function (req, res, next) {
 	res.locals.where = { author: true };
 	next();
-}, user.paginate, user.many);
+}, user.paginate, user.many, apiResponse);
 
 // Get all faculty
 app.get('/users/faculty', function (req, res, next) {
 	res.locals.where = { faculty: true };
 	next();
-}, user.paginate, user.many);
+}, user.paginate, user.many, apiResponse);
 
 // Get all featured users
 app.get('/users/featured', function (req, res, next) {
 	res.locals.where = { featured: true };
 	next();
-}, user.paginate, user.many);
+}, user.paginate, user.many, apiResponse);
 
 
 // Get all users user by name
@@ -259,7 +267,7 @@ app.get('/users/:name', function (req, res, next) {
 		res.locals.where = ['FIRST like ?', '%' + req.params.name + '%'];//{FIRST: req.params.name};
 	}
 	next();
-}, user.paginate, user.many);
+}, user.paginate, user.many, apiResponse);
 
 // Get all users by full name
 app.get('/users/:first/:last', function (req, res, next) {
@@ -273,7 +281,7 @@ app.get('/users/:first/:last', function (req, res, next) {
 			//{FIRST: req.params.first, LAST: req.params.last};
 	}
 	next();
-}, user.paginate, user.many);
+}, user.paginate, user.many, apiResponse);
 
 // User create
 app.put('/users/create', user.create);
@@ -289,19 +297,19 @@ app.delete('/users/:stuid', user.delete);
 /* BLOG */
 
 // Get all blogs
-app.get('/blog',blog.paginate, blog.many);
+app.get('/blog',blog.paginate, blog.many, apiResponse);
 
 // Get blog by ID
 app.get('/blog/:blogid', function (req, res, next) {
 	res.locals.where = { BLOG_ID: req.params.blogid };
 	next();
-}, blog.single);
+}, blog.single, apiResponse);
 
 // Get blogs by name
 app.get('/blog/:name', function (req, res, next) {
 	res.locals.where = ['NAME like ?', '%' + req.params.name + '%'];
 	next();
-}, blog.paginate, blog.many);
+}, blog.paginate, blog.many, apiResponse);
 
 // Blog Create
 app.put('/blog/create', blog.create);
@@ -319,23 +327,23 @@ app.delete('/blog/remove', blog.delete);
 app.get('/blog/:blogid/post', function (req, res, next) {
 	res.locals.where = { BLOG_ID: req.params.blogid };
 	next();
-}, post.paginate, post.many);
+}, post.paginate, post.many, apiResponse);
 
 // Get all posts by blog ID and post ID
 app.get('/blog/:blogid/post/:postid', function (req, res, next) {
 	res.locals.where = { BLOG_ID: req.params.blogid, ID: req.params.postid };
 	next();
-}, post.single);
+}, post.single, apiResponse);
 
 // Get all posts by blog ID and post title
 app.get('/blog/:blogid/post/:title', function (req, res, next) {
 	res.locals.where = 
 		['BLOG_ID = ? AND TITLE like ?', req.params.blogid, '%' + req.params.title + '%' ]
 	next();
-}, post.paginate, post.many);
+}, post.paginate, post.many, apiResponse);
 
 // Get latest posts
-app.get('/latest', post.paginate, post.many);
+app.get('/latest', post.paginate, post.many, apiResponse);
 
 
 // JUNK

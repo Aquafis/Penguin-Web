@@ -25,7 +25,7 @@ exports.paginate = function (req, res, next) {
 	next();
 }
 
-exports.many = function (req, res) {
+exports.many = function (req, res, next) {
 	db.Models.post
 		.findAll({
 			offset: res.locals.offset,
@@ -34,7 +34,7 @@ exports.many = function (req, res) {
 			order: 'CREATED DESC'
 		})
 		.success(function (posts) {
-			res.json({
+			res.locals.data = {
 				data: posts,
 				meta: {
 					count: posts.length,
@@ -46,21 +46,25 @@ exports.many = function (req, res) {
 					next: res.locals.next,
 					prev: res.locals.prev
 				}
-			});
+			};
+			next();
 		})
 		.error(function (err) {
-			res.json(500, {error: err});
+			res.locals.error = err;
+			next();
 		});
 }
 
-exports.single = function (req, res) {
+exports.single = function (req, res, next) {
 	db.Models.post.find({
 		where: res.locals.where
 	})
 	.success(function (post) {
-		res.json({ data: post });
+		res.locals.data = post;
+		next();
 	})
 	.error(function (err) {
-		res.json(500, {error: err});
+		res.locals.error = err;
+		next();
 	});
 }
