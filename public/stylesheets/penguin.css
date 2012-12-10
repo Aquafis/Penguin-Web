@@ -179,6 +179,10 @@ body, html { color: white; font-family: helvetica; font-weight: lighter; height:
 	#post-author-data { display: inline; float: right; list-style: none; margin: 0;
 		padding: 0; }
 
+	#modal-post-comment-toggle { bottom: 10px; font-size: 0.6em; position: absolute; 
+		right: 10px; }
+	#modal-post-comments { background-color: #333; box-shadow: black 3px 0px 24px -3px;
+		height: inherit; position: absolute; right: -610px; top: 0; width: 600px; }
 
 /* Login form */
 	#penguin-login { text-align: center;  }

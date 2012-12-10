@@ -78,13 +78,28 @@ exports.single = function (req, res, next) {
 }
 
 
-function attachAuthor(post, fn){
-
+function attachAuthor(post, fn) {
+	// TODO use this mask everywhere, or give each model its own mask
+	var toRemove = ['ADMIN', 'ADMIN_ID', 'CREATED', 'FACULTY', 'FEATURED',
+					'LAST_LOGIN', 'UUID', 'createdAt', 'updatedAt'];
 	db.Models.user.find({ where: { AUTHOR_ID: post.AUTHOR_ID } })
-		.success(function (author) {
-			post.attributes.splice(4, 0, 'AUTHOR');
-			post.AUTHOR = author;
-			fn(post);
+		.success(function (user) {
+			post.attributes.splice(5, 0, 'AUTHOR');	
+			// Remove sensitive data
+			for (var x in toRemove)
+				delete user[toRemove[x]];
+			post.AUTHOR = user;
+
+			// Total the post counts
+			db.Models.post.count({where: {AUTHOR_ID: post.AUTHOR_ID}})
+				.success(function (count) {
+					post.AUTHOR.attributes.splice(5, 0, 'POSTCOUNT');
+					post.AUTHOR.POSTCOUNT = count;
+					fn(post);
+				})
+				.error(function (err) {
+					fn(post);
+				})
 		})
 		.error (function (err) {
 			fn(post);

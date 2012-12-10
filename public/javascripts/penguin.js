@@ -22,6 +22,7 @@ var penguin = {//
 		postViewOpen: false,
 		postViewMini: false,
 		postLoading: true,
+		commentsOpen: false,
 		loadedPosts: [],
 
 		// Load / Open post view
@@ -36,6 +37,8 @@ var penguin = {//
 
 			// TODO Implement caching
 			$('#modal-post-content').empty();
+			$('#modal-post-comment-toggle').remove();
+			$('#modal-post-comments').remove();
 			// ajaxElement('#modal-post-container');
 			self._createArticle(postData);
 			// unAjaxElement('#modal-post-container');
@@ -280,6 +283,31 @@ var penguin = {//
 			penguin.Post.postViewMini = false;
 		},
 
+		// EVENT - Show the post-modal comment container
+		e_showPostComments: function (e) {
+			var elem = $('#modal-post-comments'),
+				btn  = $('#modal-post-comment-toggle');
+			elem.show('blind');
+			elem.removeClass('hidden');
+
+			penguin.Post.commentsOpen = true;
+			btn.html('Hide Comments');
+			btn.unbind('click', penguin.Events.e_showPostComments);
+			btn.bind('click', penguin.Events.e_hidePostComments);
+		},
+
+		e_hidePostComments: function (e) {
+			var elem = $('#modal-post-comments'),
+				btn  = $('#modal-post-comment-toggle');
+			elem.hide('blind');
+
+			penguin.Post.commentsOpen = false;
+
+			$('#modal-post-comment-toggle').html('Show Comments');
+			btn.unbind('click', penguin.Events.e_hidePostComments);
+			btn.bind('click', penguin.Events.e_showPostComments);
+		},
+
 		/* FORM & INPUT EVENTS */
 
 		// EVENT - Keyup on a username input field
@@ -507,6 +535,7 @@ var penguin = {//
 					elem.html('+');
 				}
 			});
+			
 
 			// EVENT BIND - Management modal open link click
 			$('#sidebar-welcome').bind('click', self.Events.e_showManagementModal);
@@ -564,6 +593,7 @@ var penguin = {//
 	},
 
 	_createArticle: function (postData) {
+		console.log(postData);
 		var self = penguin;
 		// TODO Load comments and other data here
 		// FAKE DATA 
@@ -638,8 +668,10 @@ var penguin = {//
 
 		authorData.append('<li>Posted: ' 
 				+ self._mysqlTimeStampToDate(postData.CREATED).toDateString() + '</li>'),
-		authorData.append('<li>Author: ' + author.name + '</li>');
-		authorData.append('<li>Posts: ' + author.posts + '</li>');
+		authorData.append('<li>Author: ' 
+				+ postData.AUTHOR.FIRST + ' '
+				+ postData.AUTHOR.LAST + '</li>');
+		authorData.append('<li>Posts: ' + postData.AUTHOR.POSTCOUNT + '</li>');
 		authorData.append('<li><a href="#">Profile</a></li>');
 
 		authorCntr.append(authorThumb);
@@ -658,13 +690,17 @@ var penguin = {//
 		postCntr.append(authorCntr);
 		postCntr.append(contentCntr);
 
-			// TODO - build comment logic
-			//commentView = $('<div id="post-comment-container"></div>');
+		// Add comments
+		if (postData.COMMENTS) {
+			$('#modal-post-container').append(
+					'<div id="modal-post-comments" class="hidden"></div>');
+			$('#modal-post-container').append(
+					'<a id="modal-post-comment-toggle" href="#">Show comments</a>');
+			$('#modal-post-comment-toggle').bind('click', self.Events.e_showPostComments);
+		} 
 	},
 
 	_slateHide: function (elem, callback) {
-		// Check and see element 
-
 		elem = (elem instanceof jQuery) ? elem : jQuery(elem);
 		elem.animate({'margin-left': '100%'}, 100, function () {
 			elem.addClass('hidden');
@@ -800,7 +836,8 @@ var penguin = {//
 			articleHeader = $('<td></td>'),
 			articleTease = $('<td></td>'),
 			articleMeta = $('<td></td>'),
-			date = this._mysqlTimeStampToDate(article.CREATED);
+			date = this._mysqlTimeStampToDate(article.CREATED),
+			name = article.AUTHOR.FIRST + ' ' + article.AUTHOR.LAST;
 
 		// Fill in CSS & Content for the article and article children
 			articleRow.addClass('article');
@@ -821,7 +858,7 @@ var penguin = {//
 			}
 
 			articleMeta.addClass('article-meta');
-			articleMeta.html('<p>'+article.AUTHOR_ID+'</p><p>'+date.toDateString()+'</p>');
+			articleMeta.html('<p>'+ name.substr(0, 30) +'</p><p>'+date.toDateString()+'</p>');
 
 		// Embed article object into the article row
 		articleRow.data('data', article);

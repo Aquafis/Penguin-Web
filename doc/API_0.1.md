@@ -39,6 +39,7 @@ Resource List
 + /blog/[name|id]/post/date
 + /blog/[name|id]/post/date/before
 + /blog/[name|id]/post/date/after
++ /blog/[name|id]/post/comments
 
 ### Blog Post Actions
 + /blog/[name|id]/post/create

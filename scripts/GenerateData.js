@@ -41,6 +41,8 @@ function createData () {
 			});
 	}
 
+	console.log('There are ' + userUUIDs.length + ' authors to be created');
+
 	// Create new process users
 	for (i = 0; i < 50; i++) {
 
@@ -60,11 +62,11 @@ function createData () {
 
 	// Create Authors
 	for (i = 0; i < userUUIDs.length; i++) {
-		var uuid = n.pick(userUUIDs);
-		authors.push(AD.randomAuthor(uuid, blogs.length));
-
-		console.log(authors[i]);
+		var uuid = userUUIDs[i],
+			auth = AD.randomAuthor(uuid, blogs.length);
+		console.log('Author with ID: ' + i + ' created');
 		addAuthorIDToUser(uuid, i+1);
+		authors.push(auth);
 	}
 
 
@@ -96,7 +98,8 @@ function createData () {
 	for(var author in authors) {
 		var newAuthor = db.Models.author.build(authors[author]);
 		newAuthor.save()
-			.success(function () {
+			.success(function (author) {
+				console.log('Author ' + author.ID + ' saved.');
 			})
 			.error(function (err) {
 				console.log('Could not save author: ' + newAuthor.ID);
@@ -143,6 +146,7 @@ function createData () {
 
 function addAuthorIDToUser (userUUID, authorId) {
 	db.Models.user.find({where: { UUID: userUUID }}).success(function(user) {
+		console.log('Adding author ID ' + authorId + ' to User ' + userUUID);
 		user.AUTHOR_ID = authorId;
 		user.save();
 	});
