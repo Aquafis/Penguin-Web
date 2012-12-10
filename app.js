@@ -14,6 +14,7 @@ var
   , params	= require('express-params')
   , path	= require('path')
   , post	= require('./routes/post')
+  , comments= require('./routes/comments')
   , routes	= require('./routes')
   , user	= require('./routes/user')
   , Session	= connect.middleware.session.Session
@@ -342,8 +343,14 @@ app.get('/blog/:blogid/post/:title', function (req, res, next) {
 	next();
 }, post.paginate, post.many, apiResponse);
 
+// Get all comments for specific post
+app.get('/blog/:blogid/post/:postid/comments', function (req, res, next) {
+	res.locals.where = {POSTID: req.params.postid};
+}, comments.paginate, comments.many, apiResponse);
+
 // Get latest posts
 app.get('/latest', post.paginate, post.many, apiResponse);
+
 
 
 // JUNK
