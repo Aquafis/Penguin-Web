@@ -34,7 +34,7 @@ implemented. This can be expected to be released late January of 2013.
 
 # Query Parameters
 ## GET
-* ### Size
+### *  Size
 
 ## POST
 
