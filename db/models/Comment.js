@@ -13,6 +13,12 @@ module.exports = function (sequelize, DataTypes) {
 				allowNull: false,
 				validate: { isNumeric: true }
 			},
+		REPLY_TO: 
+			{
+				type: DataTypes.STRING,
+				allowNull: true,
+				validate: { isUUID: 4 }
+			},
 		USER_UUID:
 			{
 				type: DataTypes.STRING,

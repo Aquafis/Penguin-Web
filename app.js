@@ -346,6 +346,7 @@ app.get('/blog/:blogid/post/:title', function (req, res, next) {
 // Get all comments for specific post
 app.get('/blog/:blogid/post/:postid/comments', function (req, res, next) {
 	res.locals.where = {POSTID: req.params.postid};
+	next();
 }, comments.paginate, comments.many, apiResponse);
 
 // Get latest posts

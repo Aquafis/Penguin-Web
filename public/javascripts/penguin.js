@@ -45,10 +45,6 @@ var penguin = {//
 		}
 	},
 
-	Resize: {
-		register: []
-	},
-
 	// Functions to handle all Penguin app events
 	Events: {	
 
@@ -286,7 +282,11 @@ var penguin = {//
 		// EVENT - Show the post-modal comment container
 		e_showPostComments: function (e) {
 			var elem = $('#modal-post-comments'),
-				btn  = $('#modal-post-comment-toggle');
+				atch = elem.find('.bounds:first'),
+				btn  = $('#modal-post-comment-toggle'),
+				cmts = [],
+				i	 = 0;
+
 			elem.show('blind');
 			elem.removeClass('hidden');
 
@@ -294,6 +294,30 @@ var penguin = {//
 			btn.html('Hide Comments');
 			btn.unbind('click', penguin.Events.e_showPostComments);
 			btn.bind('click', penguin.Events.e_hidePostComments);
+
+			if (!elem.data('loaded')) {
+				penguin._ajaxElement(elem);
+				$.ajax({
+					url: '/blog/' + elem.data('blogID') 
+					+ '/post/' + elem.data('postID') + '/comments',
+					success: function (comments) {
+						$.each(comments.data, function (idx, comment) {
+							var commentMarkup = penguin._createComment(comment);
+							commentMarkup.hide();
+							atch.append(commentMarkup);
+							cmts.push(commentMarkup);
+						});
+
+						penguin._unAjaxElement(elem);
+						elem.data('loaded', true);
+
+						(function () {
+							$(cmts[i++]).show('fast', arguments.callee);	
+
+						})();
+					}
+				});
+			}
 		},
 
 		e_hidePostComments: function (e) {
@@ -691,13 +715,74 @@ var penguin = {//
 		postCntr.append(contentCntr);
 
 		// Add comments
-		if (postData.COMMENTS) {
+		if (!postData.COMMENTS) {
 			$('#modal-post-container').append(
 					'<div id="modal-post-comments" class="hidden"></div>');
+
 			$('#modal-post-container').append(
 					'<a id="modal-post-comment-toggle" href="#">Show comments</a>');
+
+			$('#modal-post-comments').data({
+				loaded: false,
+				postID: postData.ID,
+				blogID: postData.BLOG_ID
+			});
+
+			$('#modal-post-comments').append('<div class="bounds"></div>');
+
+			//self._ajaxElement('#modal-post-comments');
+
 			$('#modal-post-comment-toggle').bind('click', self.Events.e_showPostComments);
-		} 
+		} else {
+			$('#modal-post-container').append(
+					'<span id="modal-post-comment-toggle" >Comments Disabled</span>');
+
+		}
+	},
+
+	_createComment: function (commentData) {
+		var cntr = $('<div class="comment"></div>'),
+			ctnt = $('<div class="comment-content"></div>'),
+			actn = $('<div class="comment-actions"></div>'),
+			profile = null; // Used as handle later
+
+		// Create content for comment
+		var ctnt_meta = $('<ul class="comment-content-meta"></ul>');
+		// Add author name
+		ctnt_meta.append('<li class="comment-content-author">'
+				+ commentData.AUTHOR.FIRST + ' '
+				+ commentData.AUTHOR.LAST + '</li>');
+
+		// Add comment date
+		ctnt_meta.append('<li class="comment-content-date">'
+				+ penguin._mysqlTimeStampToDate(commentData.CREATED).toDateString()
+				+ '</li>');
+
+		// Add comment type
+		ctnt_meta.append('<li class="comment-content-type">Comment</li>'); // TODO Add Schema
+
+		// Add link to profile
+		profile = ctnt_meta.append('<li><a href="#">Profile</li>');
+
+		var ctnt_post = $('<p class="comment-content-post">' 
+				+ commentData.CONTENT+'</p>');
+
+		ctnt.append(ctnt_meta);
+		ctnt.append(ctnt_post);
+		
+		// Create comment actions
+		// TODO add admin / owner actions, add events
+		var actn_reply = $('<a href="#">Reply</a>'),
+			actn_hide  = $('<a href="#">Hide</a>');
+
+		actn.append(actn_reply);
+		actn.append(actn_hide);
+
+		// Add elements to container
+		cntr.append(ctnt);
+		cntr.append(actn);
+
+		return cntr;
 	},
 
 	_slateHide: function (elem, callback) {
