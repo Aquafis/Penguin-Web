@@ -95,6 +95,52 @@ block markup
                             li
                                 button(type="button") Login
                     h1.heading Sign up for an account
+                    form#penguin-signup.shy(action="")
+                        span.step 1
+                        h3.form-header Account Information
+                        ul
+                            li
+                                input#signup-first(type="text", placeholder="First Name")
+                            li
+                                input#signup-last(type="text", placeholder="Last Name")
+                            li
+                                input#signup-email(type="text", placeholder="LHU Email")
+                            li
+                                input#signup-id(type="text", placeholder="Student ID")
+                            li
+                                p.error.hidden
+                            li
+                                button#signup-button(type="button") Sign up
+                    form#penguin-validate.shy(action="")
+                        span.step 2
+                        h3.form-header Account Validation
+                        ul
+                            li
+                                p We'll need to check and make sure your account is
+                                    | valid with the LHU directory. Please log in
+                                    | below as you would to your email or MyHaven.
+                            li
+                                input#signup-validate-email.nowrite(type="text")
+                            li
+                                input#signup-validate-password(type="password", placeholder="LHU password")
+                            li
+                                p.error.hidden
+                            li
+                                button#signup-validate-button(type="button") Validate
+                    div(style="margin: 10px;")
+                        span.step 3
+                        h3.form-header Almost There!
+                            ul(style="list-style: none")
+                                li
+                                    p Looking great!
+                                li
+                                    p The last step is to check the email you provided 
+                                        |for the final instructions on setting up your
+                                        | new account!
+
+
+
+                                
             #content-penguin-webmail.content
                 p Coming soon
             #content-penguin-faq.content
@@ -149,7 +195,9 @@ block markup
         #modal-manage-container.hidden
             .bounds
                 #modal-manage-content
-                    .wrapper
+                    .bounds
+                        .wrapper
+                            textarea.wysiwyg
                 aside#modal-manage-aside
                     .bounds
                         ul#manage-account-menu.modal-menu.modal-submenu.hidden
