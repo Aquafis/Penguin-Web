@@ -11,7 +11,6 @@
 	"express-params": "*",
 	"cookie": "*",
     "jade": "*",
-    "sequelize": "*",
 	"socket.io": "*"
   }
 }
