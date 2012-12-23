@@ -5,8 +5,8 @@ var db = {
 	/* Connection constants */
 	__HOST: 'localhost',
 	__PORT:  8889,
-	__DATABASE: 'penguin',
-	__USERNAME: 'penguin',
+	__DATABASE: 'penguin2',
+	__USERNAME: 'penguin2',
 	__PASSWORD: 'ou8one2',
 
 	/* Sequelize Object (Used throughout) */
@@ -31,8 +31,8 @@ var db = {
 		console.log('connecting...');
 
 		self._sqlize = new Sequelize(
-				'penguin',
-				'penguin',
+				'penguin_test',
+				'penguin2',
 				'ou8one2',
 				{
 					host: 'localhost',
@@ -67,20 +67,10 @@ var db = {
 	_createRelations: function () {
 		var self = this;
 
-		// Blog relationships
-		self.Models.blog.hasMany(self.Models.author, {
-			as: 'Authors',
-			foreignKey: 'BLOG_ID',
-			joinTableName: 'Authors'
-		});
-
-		/*
-		// Blog Relationships
-		this.Models.user.hasOne(self.Models.blog, {
-			as: 'Owner',
-			foreignKey: 'OWNER_UUID',
-			type: self._sqlize.STRING
-		});(*/
+		/*----- BLOG RELATIONSHIPS ----*/
+		self.Models.blog.belongsTo(self.Models.user, {as: 'Owner', foreignKey: 'OWNER_UUID'});
+		self.Models.blog.hasMany(self.Models.post, {as: 'Posts'});
+		self.Models.blog.hasMany(self.Models.author, {as: 'Authors'});
 	},
 
 	_overwriteModels: function (callback) {

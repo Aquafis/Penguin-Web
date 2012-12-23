@@ -13,10 +13,10 @@ var
   , io		= require('socket.io')
   , params	= require('express-params')
   , path	= require('path')
-  , post	= require('./routes/post')
   , comments= require('./routes/comments')
   , routes	= require('./routes')
   , user	= require('./routes/user')
+  , API		= require('./API')
   , Session	= connect.middleware.session.Session
   , Store	= connect.middleware.session.MemoryStore;
 
@@ -159,9 +159,14 @@ function apiResponse (req, res, next) {
 
 
 // Some param pre-definitions
-app.param('stuid', /^([\d]{1,8})$/);
-app.param('blogid', /^\d+$/);
-app.param('postid', /^\d+$/);
+for (var param in API.customResourceParam) {
+	app.param(param, API.customResourceParam[param]);
+}
+
+// Issue Express all GET API middleware
+for (var GR in API.resources.GET) {
+	app.get(GR, API.resources.GET[GR]);
+}
 
 app.get('/', function(req, res) {
 	var loggedin	= false, 
@@ -230,10 +235,10 @@ app.post('/signup', function (req, res) {
 /* USERS */
 
 // Get user by student ID
-app.get('/users/:stuid', user.byStuId, apiResponse);
+//app.get('/users/:stuid', user.byStuId, apiResponse);
 
 // Get all users
-app.get('/users', user.paginate, user.many, apiResponse);
+//app.get('/users', user.paginate, user.many, apiResponse);
 
 // Get all admins
 app.get('/users/admin', function (req, res, next) {

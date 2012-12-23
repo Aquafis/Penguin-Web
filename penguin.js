@@ -1,41 +1,37 @@
-var
-    blog	= require('./routes/blog')
-  , connect	= require('connect')
-  , cookie  = require('cookie')
-  , db		= require('./db')
-  , express = require('express')
-  , fs		= require('fs')
-  , http	= require('http')
-  , https	= require('https')
-  , io		= require('socket.io')
-  , params	= require('express-params')
-  , path	= require('path')
-  , post	= require('./routes/post')
-  , routes	= require('./routes')
-  , user	= require('./routes/user')
-  , Session	= connect.middleware.session.Session
-  , Store	= connect.middleware.session.MemoryStore;
+var	API			= require('./api/API')
+	, RTN		= require('./rtn/RTN')
+	, connect	= require('connect')
+	, cookie	= require('cookie')
+	, crypto	= require('crypto')
+	, db		= require('./db')
+	, express	= require('express')
+	, fs		= require('fs')
+	, http		= require('http')
+	, https		= require('https')
+	, io		= require('socket.io')
+	, params	= require('express-params')
+	, path		= require('path')
+	, Session	= connect.middleware.session.Session
+	, Store		= connect.middleware.session.MemoryStore;
 
-
-var Penguin = function () {
+exports.Create = function () {
 	var app		= express(),
+		privKey	= fs.readFileSync('privkey.pem').toString(),
+		cert	= fs.readFileSync('certificate.pem').toString(),
 		server	= http.createServer(app),
+		sserver = https.createServer({key: privKey, cert: cert}, app),
 		rtn		= io.listen(server),
 		store	= new Store(),
 		self	= this;
 
-	self.initServer = function (port, secret) {
-		// Initialze and configure express
-		app = express();
-		server = http.createServer(app);
-		rtn = io.listen(server);
-
+	self._configWebServers = function (port, sport, secret) {
 		// Express extensions
 		params.extend(app);
-
+		
 		// Configure Express
-		app.configure(function(){
-		  app.set('port', process.env.PORT || 80);
+		app.configure(function() {
+		  app.set('port', process.env.PORT || port);
+		  app.set('sport', process.env.SPORT || sport);
 		  app.set('views', __dirname + '/views');
 		  app.set('view engine', 'jade');
 		  app.use(express.favicon());
@@ -46,7 +42,7 @@ var Penguin = function () {
 
 		  app.use(express.session({
 			  store: store,
-			  secret: secret
+			  secret: secret,
 			  key: 'express.sid'
 		  }));
 
@@ -58,12 +54,45 @@ var Penguin = function () {
 		  app.use(express.errorHandler());
 		});
 
-		/* TODO ITERATE OVER ROUTES */
+		// Register special API paramater names
+		for (var param in API.customResourceParams) {
+			app.param(param, API.customResourceParams[param]);
+		}
+
+		// API - GET RESOURCES ROUTES
+		for (var gr in API.resources.GET) {
+			app.get(gr, API.resources.GET[gr]);
+		}
+
+		// API - POST RESOURCES ROUTES
+		for (var po in API.resources.POST) {
+			app.post(po, API.resources.POST[po]);
+		}
+
+		// API - PUT RESOURCES ROUTES
+		for (var pt in API.resources.PUT) {
+			app.put(pt, API.resources.PUT[pt]);
+		}
+		
+		// API - DELETE RESOURCE ROUTES
+		for (var rm in API.resources.DELETE) {
+			app.delete(rm, API.resources.DELETE[rm]);
+		}
+
+		server.listen(app.get('port'), function () {
+			console.log('Express Server running on port: ' + app.get('port'));
+		});
+
+		sserver.listen(app.get('sport'), function () {
+			console.log('Express Secure Server running on port: ' + app.get('sport'));
+		});
 	}
 
-	self.initRTNServer = function (secret) {
+
+	self._configRTNServer = function (secret) {
+		// RTN Configuration
 		rtn.configure(function() {
-			// Let sessions be accessible by socket.io (RTN)
+			// Let Express sessions be accessible by socket.io (RTN)
 			rtn.set('authorization', function (data, accept) {
 				if (data.headers.cookie) {
 					try {
@@ -92,35 +121,12 @@ var Penguin = function () {
 				}
 			});
 		});
+		
+		// Client connection handler
+		rtn.sockets.on('connection', RTN.ConnectHandler);
 	}
 
-	self.startServers = function () {
-		rtn.sockets.on('connection', function (socket) {
-			var hs = socket.handshake;
-
-			var intID = setInterval(function () {
-				hs.session.reload(function() {
-					hs.session.touch().save();
-				});
-			}, 60 * 1000);
-			socket.emit('conn', {success: 'RTN connection successful. Hello! ' + hs.sessionID});
-			balls(socket.id);
-
-			socket.on('boner', function (data) {
-				console.log('BONER RECEIVED!');
-				hs.session.reload(function() {
-					hs.session.boner = 'boner activated';
-					hs.session.touch().save();
-				});
-			});
-			socket.on('cdump', function () {
-				console.log('SESSION DATA: %j ', hs.session);
-			});
-});
-
-	}
-
-	self.acquireSecret = function (fn) {
+	self._acquireSecret = function (fn) {
 		fs.readFile('secret.key', 'ascii', function (err, data) {
 			if (err) {
 				rtn.log.info('No secret found, generated a new one');
@@ -139,5 +145,19 @@ var Penguin = function () {
 				return data;
 		});
 	}
+
+	self.StartServers = function (port, sport) {
+		// Get the secret, then config / launch servers
+		self._acquireSecret(function (secret) {
+			self._configWebServers(port || 8000, sport || 8001,  secret);
+			self._configRTNServer(secret);
+		});
+
+		// Connect to the database and load in the data models
+		db.Connect();
+		db.fetchModels();
+	}
+
+	return this;
 }
 
